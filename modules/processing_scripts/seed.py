@@ -1,3 +1,7 @@
+
+
+# صفحة لمعالجة البذور في واجهة المستخدم
+
 import json
 
 import gradio as gr

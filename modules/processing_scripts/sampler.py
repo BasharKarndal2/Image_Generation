@@ -1,3 +1,6 @@
+
+
+# صفحة لمعالجة المأخذ في واجهة المستخدم
 import gradio as gr
 
 from modules import scripts, sd_samplers, sd_schedulers, shared

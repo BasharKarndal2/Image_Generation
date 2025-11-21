@@ -1,3 +1,6 @@
+
+# صفحلا لمعالجة المكرر في واجهة المستخدم
+
 import gradio as gr
 
 from modules import scripts, sd_models

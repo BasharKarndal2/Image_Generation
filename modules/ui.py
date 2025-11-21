@@ -263,6 +263,27 @@ def create_ui():
 
     scripts.scripts_current = scripts.scripts_txt2img
     scripts.scripts_txt2img.initialize_scripts(is_img2img=False)
+    with gr.Blocks(analytics_enabled=False) as txt2img_interface:
+        
+        # 🌟 BEGIN: الكود الجديد لإضافة الصورة في أعلى اليمين 🌟
+        # نستخدم صف (Row) لتنظيم العناصر أفقياً
+        with gr.Row(elem_id="txt2img_top_custom_row"):
+            # عمود فارغ لدفع الصورة إلى اليمين (سنستخدم CSS للتحكم الدقيق)
+            gr.Column(scale=9) # عمود يأخذ معظم المساحة
+            
+            # عمود يحوي الصورة (scale=1) لجعله صغيراً
+            with gr.Column(scale=1, min_width=100, elem_id="custom_logo_container"):
+                gr.Image(
+                    value=r"C:\gen_face\stable-diffusion-webui\modules\30cm.jpg", 
+                    label="الشعار",
+                    interactive=False,
+                    show_label=False,
+                    height=80, # حجم أصغر مناسب للشعار
+                    elem_classes=["custom-logo-image"]
+                )
+        # 🌟 END: الكود الجديد 🌟
+
+        toprow = ui_toprow.Toprow(is_img2img=False, is_compact=shared.opts.compact_prompt_box)
 
     with gr.Blocks(analytics_enabled=False) as txt2img_interface:
         toprow = ui_toprow.Toprow(is_img2img=False, is_compact=shared.opts.compact_prompt_box)
@@ -277,6 +298,20 @@ def create_ui():
                 if shared.opts.txt2img_settings_accordion:
                     stack.enter_context(gr.Accordion("Open for Settings", open=False))
                 stack.enter_context(gr.Column(variant='compact', elem_id="txt2img_settings"))
+
+
+                gr.Image(
+                            value="C:\\gen_face\\stable-diffusion-webui\\modules\\30cm.jpg", # **استبدل هذا بالمسار الصحيح**
+                            label="صورة الشعار أو التوضيح",
+                            interactive=False, # لمنع المستخدم من تحميل صورة بدلاً منها
+                            show_label=True,
+                            height=150 # يمكنك تعديل الارتفاع حسب الحاجة
+                                    )
+
+
+
+
+
 
                 scripts.scripts_txt2img.prepare_ui()
 

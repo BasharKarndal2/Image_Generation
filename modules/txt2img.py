@@ -11,8 +11,24 @@ from PIL import Image
 import gradio as gr
 
 
+from deep_translator import MyMemoryTranslator
+
+def translate_text(text):
+    return MyMemoryTranslator(source='ar-EG', target='en-GB').translate(text)
+
+
+
 def txt2img_create_processing(id_task: str, request: gr.Request, prompt: str, negative_prompt: str, prompt_styles, n_iter: int, batch_size: int, cfg_scale: float, height: int, width: int, enable_hr: bool, denoising_strength: float, hr_scale: float, hr_upscaler: str, hr_second_pass_steps: int, hr_resize_x: int, hr_resize_y: int, hr_checkpoint_name: str, hr_sampler_name: str, hr_scheduler: str, hr_prompt: str, hr_negative_prompt, override_settings_texts, *args, force_enable_hr=False):
     override_settings = create_override_settings_dict(override_settings_texts)
+
+
+   
+    tex_prompt = translate_text(prompt)
+    tex_negative_prompt = translate_text(negative_prompt)
+    print(tex_prompt)
+    print(tex_negative_prompt)
+    print(prompt)
+    print(translate_text("مرحبا كيف حالك؟"))
 
     if force_enable_hr:
         enable_hr = True
@@ -21,9 +37,9 @@ def txt2img_create_processing(id_task: str, request: gr.Request, prompt: str, ne
         sd_model=shared.sd_model,
         outpath_samples=opts.outdir_samples or opts.outdir_txt2img_samples,
         outpath_grids=opts.outdir_grids or opts.outdir_txt2img_grids,
-        prompt=prompt,
+        prompt=tex_prompt,
         styles=prompt_styles,
-        negative_prompt=negative_prompt,
+        negative_prompt=tex_negative_prompt,
         batch_size=batch_size,
         n_iter=n_iter,
         cfg_scale=cfg_scale,
