@@ -212,3 +212,21 @@ function uiElementInSight(el) {
 
     return isOnScreen;
 }
+onUiLoaded(() => {
+    const app = gradioApp();
+
+    function activateButtons() {
+        const buttons = app.querySelectorAll(".svelte-kqij2n");
+        if (!buttons || buttons.length === 0) return;
+
+        buttons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                buttons.forEach(b => b.classList.remove("active-bg"));
+                btn.classList.add("active-bg");
+            });
+        });
+    }
+
+    // ننتظر قليلاً لأن Gradio يبني العناصر بعد الواجهة
+    setTimeout(activateButtons, 500);
+});

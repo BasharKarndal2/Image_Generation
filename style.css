@@ -25,6 +25,8 @@ div.gradio-image button[aria-label="Edit"] {
 
 div.gradio-container{
     max-width: unset !important;
+    background-color: #002623 !important;
+    color: #b9a779;
 }
 
 .hidden{
@@ -140,6 +142,8 @@ div.gradio-html.min{
 .gradio-container .prose a, .gradio-container .prose a:visited{
     color: unset;
     text-decoration: none;
+    background-color:#002623 !important;
+    color: #b9a779 !important;
 }
 
 a{
@@ -150,6 +154,8 @@ a{
 /* gradio 3.39 puts a lot of overflow: hidden all over the place for an unknown reason. */
 div.gradio-container, .block.gradio-textbox, div.gradio-group, div.gradio-dropdown{
     overflow: visible !important;
+    background-color: #002623;
+    color: #b9a779 !important;
 }
 
 /* align-items isn't enough and elements may overflow in Safari. */
@@ -185,7 +191,7 @@ button.custom-button{
     border-radius: var(--button-large-radius);
     padding: var(--button-large-padding);
     font-weight: var(--button-large-text-weight);
-    border: var(--button-border-width) solid var(--button-secondary-border-color);
+    border: var(--button-border-width) solid #054239 !important;
     background: var(--button-secondary-background-fill);
     color: var(--button-secondary-text-color);
     font-size: var(--button-large-text-size);
@@ -198,7 +204,7 @@ button.custom-button{
 }
 
 div.block.gradio-accordion {
-    border: 1px solid var(--block-border-color) !important;
+    border: 1px solid #b9a779!important;
     border-radius: 8px !important;
     margin: 2px 0;
     padding: 8px 8px;
@@ -443,6 +449,9 @@ div.toprow-compact-tools{
 }
 #quicksettings > div.gradio-dropdown{
     min-width: 24em !important;
+    align-items: center;
+   
+    
 }
 
 #settings{
@@ -1664,4 +1673,147 @@ body.resizing .resize-handle {
 .extra-network-tree .tree-list-content:hover .button-row {
     visibility: visible;
     width: auto;
+}
+
+
+/* ========================= */
+
+/* إزالة الإطار */
+.custom-header-image img {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* إزالة أيقونة التحميل */
+.custom-header-image .download,
+.custom-header-image .icon-button {
+    display: none !important;
+}
+
+/* إزالة الخلفية الرمادية حول الصورة */
+.custom-header-image .image-container {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+.icon-buttons.svelte-1btp92j {
+    display: none !important;
+}
+.custom-header-image{
+    border: none !important;
+} 
+/* الصورة على اليسار */
+
+/* الإعدادات السريعة على اليمين */
+#right_quicksettings_container .gradio-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    /* يدفع كل العناصر لليمين داخل العمود */
+    gap: 5px;
+    /* مسافة بين عناصر الإعدادات */
+}
+.svelte-kqij2n{
+    
+
+    color: #b9a779 !important;
+    /* background-color:#054239 !important; */
+    /* border-color: #b9a779 !important; */
+}
+
+.gradio-tabs .tab-nav>button.selected {
+   
+    background-color: #054239!important;
+    border-color: #b9a779 !important;
+
+  
+
+}
+
+div.svelte-19hvt5v{
+
+    border-color: #b9a779 !important;   
+}
+
+textarea.svelte-1f354aw.svelte-1f354aw{
+    border-color: #b9a779 !important;   
+    color: #b9a779 !important;
+    background-color: #054239 !important;
+}
+textarea.svelte-1f354aw.svelte-1f354aw::placeholder {
+    color: #b9a779 !important;
+}
+textarea.svelte-1f354aw.svelte-1f354aw:focus{
+    border: 4px solid #b9a779 !important;
+        outline: none !important;
+        box-shadow: 0 0 5px #f4c54255;
+        border-radius: 6px;
+}
+.gradio-dropdown div.wrap.wrap.wrap.wrap {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border-color: #b9a779 !important;
+    background-color: #054239 !important;
+    color: #b9a779 !important;
+    
+}
+input.svelte-1xsj8nn.svelte-1xsj8nn.svelte-1xsj8nn{
+ 
+    color: #b9a779 !important;
+    /* font-size: 15px !important; */
+ 
+}
+/* .seconportant;dary.svelte-cmf5ev{
+    background-color: #054239 !important;
+    border-color: #b9a779 !important;
+    color: #b9a779 !important;
+} */
+
+.gradio-dropdown label span:not(.has-info) {
+    color: #b9a779 !important;
+}
+
+.dropdown-arrow.svelte-p5edak{
+    fill:#b9a779 !important;
+
+}
+
+
+
+
+
+
+span.svelte-1gfkn6j{
+    color: #b9a779 !important;
+}
+
+.lg.svelte-cmf5ev {
+    
+    border: solid 1px #b9a779 !important;
+    background:#054239 !important;
+     color: #b9a779 !important;
+}
+.lg.svelte-cmf5ev:hover {
+    border: solid 1px #b9a779 !important;
+    background:#0f5a4e !important;
+     color: #b9a779 !important;
+}
+
+
+
+input[type=range].svelte-1cl284s {
+    accent-color:#b9a779!important;
+    /* لون المسار بالكامل */
+}
+input[type=number].svelte-1cl284s {
+
+
+    color: #b9a779 !important;
+    background-color: #054239 !important;
+    border-color: #b9a779 !important;
+}
+.container.svelte-pjtc3>input.svelte-pjtc3 {
+    color: #b9a779 !important;
+        background-color: #054239 !important;
+        border-color: #b9a779 !important;
 }

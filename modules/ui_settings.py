@@ -289,10 +289,30 @@ class UiSettings:
 
     def add_quicksettings(self):
         with gr.Row(elem_id="quicksettings", variant="compact"):
-            for _i, k, _item in sorted(self.quicksettings_list, key=lambda x: self.quicksettings_names.get(x[1], x[0])):
-                component = create_setting_component(k, is_quicksettings=True)
-                self.component_dict[k] = component
 
+
+
+            with gr.Column(scale=1, min_width=100):
+                for _i, k, _item in sorted(self.quicksettings_list, key=lambda x: self.quicksettings_names.get(x[1], x[0])):
+                    component = create_setting_component(k, is_quicksettings=True)
+                    self.component_dict[k] = component
+            gr.Column(scale=8)
+            # الصورة على أقصى اليمين
+            with gr.Column(scale=2, min_width=100, elem_id="left_image_container"):
+                gr.Image(
+                    value="modules/Syrian_logo_icon_gold.png",
+                    label="",
+                    interactive=False,
+                    show_label=False,
+                    height=100,
+                    elem_classes=["custom-header-image"]
+                )
+
+            # عمود فارغ لأخذ المساحة الوسطى
+        
+
+        # الإعدادات السريعة على أقصى اليمين
+        
     def add_functionality(self, demo):
         self.submit.click(
             fn=wrap_gradio_call_no_job(lambda *args: self.run_settings(*args), extra_outputs=[gr.update()]),

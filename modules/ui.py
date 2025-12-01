@@ -265,24 +265,7 @@ def create_ui():
     scripts.scripts_txt2img.initialize_scripts(is_img2img=False)
     with gr.Blocks(analytics_enabled=False) as txt2img_interface:
         
-        # 🌟 BEGIN: الكود الجديد لإضافة الصورة في أعلى اليمين 🌟
-        # نستخدم صف (Row) لتنظيم العناصر أفقياً
-        with gr.Row(elem_id="txt2img_top_custom_row"):
-            # عمود فارغ لدفع الصورة إلى اليمين (سنستخدم CSS للتحكم الدقيق)
-            gr.Column(scale=9) # عمود يأخذ معظم المساحة
-            
-            # عمود يحوي الصورة (scale=1) لجعله صغيراً
-            with gr.Column(scale=1, min_width=100, elem_id="custom_logo_container"):
-                gr.Image(
-                    value=r"C:\gen_face\stable-diffusion-webui\modules\30cm.jpg", 
-                    label="الشعار",
-                    interactive=False,
-                    show_label=False,
-                    height=80, # حجم أصغر مناسب للشعار
-                    elem_classes=["custom-logo-image"]
-                )
-        # 🌟 END: الكود الجديد 🌟
-
+       
         toprow = ui_toprow.Toprow(is_img2img=False, is_compact=shared.opts.compact_prompt_box)
 
     with gr.Blocks(analytics_enabled=False) as txt2img_interface:
@@ -300,13 +283,7 @@ def create_ui():
                 stack.enter_context(gr.Column(variant='compact', elem_id="txt2img_settings"))
 
 
-                gr.Image(
-                            value="C:\\gen_face\\stable-diffusion-webui\\modules\\30cm.jpg", # **استبدل هذا بالمسار الصحيح**
-                            label="صورة الشعار أو التوضيح",
-                            interactive=False, # لمنع المستخدم من تحميل صورة بدلاً منها
-                            show_label=True,
-                            height=150 # يمكنك تعديل الارتفاع حسب الحاجة
-                                    )
+                
 
 
 
@@ -1148,7 +1125,7 @@ def create_ui():
     settings.create_ui(loadsave, dummy_component)
 
     interfaces = [
-        (txt2img_interface, "txt2img", "txt2img"),
+        (txt2img_interface, "تحويل النص الى صورة", "تحويل النص الى صورة"),
         (img2img_interface, "img2img", "img2img"),
         (extras_interface, "Extras", "extras"),
         (pnginfo_interface, "PNG Info", "pnginfo"),
@@ -1166,11 +1143,11 @@ def create_ui():
     for _interface, label, _ifid in interfaces:
         shared.tab_names.append(label)
 
-    with gr.Blocks(theme=shared.gradio_theme, analytics_enabled=False, title="Stable Diffusion") as demo:
+    with gr.Blocks(theme=shared.gradio_theme, analytics_enabled=False, title="Image Genrtayion") as demo:
         settings.add_quicksettings()
 
         parameters_copypaste.connect_paste_params_buttons()
-
+       
         with gr.Tabs(elem_id="tabs") as tabs:
             tab_order = {k: i for i, k in enumerate(opts.ui_tab_order)}
             sorted_interfaces = sorted(interfaces, key=lambda x: tab_order.get(x[1], 9999))
