@@ -46,8 +46,17 @@ def apply_and_restart(disable_list, update_list, disable_all):
         except Exception:
             errors.report(f"Error getting updates for {ext.name}", exc_info=True)
 
+    # تحويل القيمة العربية إلى إنجليزية للحفظ
+    disable_all_en = disable_all
+    if disable_all == "لا شيء":
+        disable_all_en = "none"
+    elif disable_all == "إضافات خارجية فقط":
+        disable_all_en = "extra"
+    elif disable_all == "الكل":
+        disable_all_en = "all"
+    
     shared.opts.disabled_extensions = disabled
-    shared.opts.disable_all_extensions = disable_all
+    shared.opts.disable_all_extensions = disable_all_en
     shared.opts.save(shared.config_filename)
 
     if restart.is_restartable():
@@ -68,16 +77,16 @@ def save_config_state(name):
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(current_config_state, f, indent=4, ensure_ascii=False)
     config_states.list_config_states()
-    new_value = next(iter(config_states.all_config_states.keys()), "Current")
-    new_choices = ["Current"] + list(config_states.all_config_states.keys())
-    return gr.Dropdown.update(value=new_value, choices=new_choices), f"<span>Saved current webui/extension state to \"{filename}\"</span>"
+    new_value = next(iter(config_states.all_config_states.keys()), "الحالي")
+    new_choices = ["الحالي"] + list(config_states.all_config_states.keys())
+    return gr.Dropdown.update(value=new_value, choices=new_choices), f"<span>تم حفظ حالة واجهة الويب/الإضافات الحالية إلى \"{filename}\"</span>"
 
 
 def restore_config_state(confirmed, config_state_name, restore_type):
-    if config_state_name == "Current":
-        return "<span>Select a config to restore from.</span>"
+    if config_state_name == "الحالي":
+        return "<span>اختر إعدادات للاستعادة منها.</span>"
     if not confirmed:
-        return "<span>Cancelled.</span>"
+        return "<span>تم الإلغاء.</span>"
 
     check_access()
 
@@ -85,11 +94,20 @@ def restore_config_state(confirmed, config_state_name, restore_type):
 
     print(f"*** Restoring webui state from backup: {restore_type} ***")
 
-    if restore_type == "extensions" or restore_type == "both":
+    # تحويل القيم العربية إلى إنجليزية للكود الداخلي
+    restore_type_en = restore_type
+    if restore_type == "الإضافات فقط":
+        restore_type_en = "extensions"
+    elif restore_type == "واجهة الويب فقط":
+        restore_type_en = "webui"
+    elif restore_type == "كلاهما":
+        restore_type_en = "both"
+    
+    if restore_type_en == "extensions" or restore_type_en == "both":
         shared.opts.restore_config_state_file = config_state["filepath"]
         shared.opts.save(shared.config_filename)
 
-    if restore_type == "webui" or restore_type == "both":
+    if restore_type_en == "webui" or restore_type_en == "both":
         config_states.restore_webui_config(config_state)
 
     shared.state.request_restart()
@@ -141,13 +159,13 @@ def extension_table():
             <tr>
                 <th>
                     <input class="gr-check-radio gr-checkbox all_extensions_toggle" type="checkbox" {'checked="checked"' if all(ext.enabled for ext in extensions.extensions) else ''} onchange="toggle_all_extensions(event)" />
-                    <abbr title="Use checkbox to enable the extension; it will be enabled or disabled when you click apply button">Extension</abbr>
+                    <abbr title="استخدم مربع الاختيار لتفعيل الإضافة؛ سيتم تفعيلها أو تعطيلها عند النقر على زر التطبيق">الإضافة</abbr>
                 </th>
-                <th>URL</th>
-                <th>Branch</th>
-                <th>Version</th>
-                <th>Date</th>
-                <th><abbr title="Use checkbox to mark the extension for update; it will be updated when you click apply button">Update</abbr></th>
+                <th>الرابط</th>
+                <th>الفرع</th>
+                <th>الإصدار</th>
+                <th>التاريخ</th>
+                <th><abbr title="استخدم مربع الاختيار لتحديد الإضافة للتحديث؛ سيتم تحديثها عند النقر على زر التطبيق">تحديث</abbr></th>
             </tr>
         </thead>
         <tbody>
@@ -165,7 +183,16 @@ def extension_table():
             ext_status = ext.status
 
         style = ""
-        if shared.cmd_opts.disable_extra_extensions and not ext.is_builtin or shared.opts.disable_all_extensions == "extra" and not ext.is_builtin or shared.cmd_opts.disable_all_extensions or shared.opts.disable_all_extensions == "all":
+        # تحويل القيمة العربية إلى إنجليزية للتحقق
+        disable_all_val = shared.opts.disable_all_extensions
+        if disable_all_val == "لا شيء":
+            disable_all_val = "none"
+        elif disable_all_val == "إضافات خارجية فقط":
+            disable_all_val = "extra"
+        elif disable_all_val == "الكل":
+            disable_all_val = "all"
+        
+        if shared.cmd_opts.disable_extra_extensions and not ext.is_builtin or disable_all_val == "extra" and not ext.is_builtin or shared.cmd_opts.disable_all_extensions or disable_all_val == "all":
             style = STYLE_PRIMARY
 
         version_link = ext.version
@@ -192,7 +219,7 @@ def extension_table():
 
 
 def update_config_states_table(state_name):
-    if state_name == "Current":
+    if state_name == "الحالي":
         config_state = config_states.get_config()
     else:
         config_state = config_states.all_config_states[state_name]
@@ -228,17 +255,17 @@ def update_config_states_table(state_name):
             style_commit = STYLE_PRIMARY
 
         code = f"""<!-- {time.time()} -->
-<h2>Config Backup: {config_name}</h2>
-<div><b>Filepath:</b> {filepath}</div>
-<div><b>Created at:</b> {created_date}</div>
-<h2>WebUI State</h2>
+<h2>نسخ احتياطي للإعدادات: {config_name}</h2>
+<div><b>مسار الملف:</b> {filepath}</div>
+<div><b>تم الإنشاء في:</b> {created_date}</div>
+<h2>حالة واجهة الويب</h2>
 <table id="config_state_webui">
     <thead>
         <tr>
-            <th>URL</th>
-            <th>Branch</th>
-            <th>Commit</th>
-            <th>Date</th>
+            <th>الرابط</th>
+            <th>الفرع</th>
+            <th>الالتزام</th>
+            <th>التاريخ</th>
         </tr>
     </thead>
     <tbody>
@@ -258,15 +285,15 @@ def update_config_states_table(state_name):
         </tr>
     </tbody>
 </table>
-<h2>Extension State</h2>
+<h2>حالة الإضافات</h2>
 <table id="config_state_extensions">
     <thead>
         <tr>
-            <th>Extension</th>
-            <th>URL</th>
-            <th>Branch</th>
-            <th>Commit</th>
-            <th>Date</th>
+            <th>الإضافة</th>
+            <th>الرابط</th>
+            <th>الفرع</th>
+            <th>الالتزام</th>
+            <th>التاريخ</th>
         </tr>
     </thead>
     <tbody>
@@ -320,10 +347,10 @@ def update_config_states_table(state_name):
     except Exception as e:
         print(f"[ERROR]: Config states {filepath}, {e}")
         code = f"""<!-- {time.time()} -->
-<h2>Config Backup: {config_name}</h2>
-<div><b>Filepath:</b> {filepath}</div>
-<div><b>Created at:</b> {created_date}</div>
-<h2>This file is corrupted</h2>"""
+<h2>نسخ احتياطي للإعدادات: {config_name}</h2>
+<div><b>مسار الملف:</b> {filepath}</div>
+<div><b>تم الإنشاء في:</b> {created_date}</div>
+<h2>هذا الملف تالف</h2>"""
 
     return code
 
@@ -391,7 +418,7 @@ def install_extension_from_url(dirname, url, branch_name=None):
         launch.run_extension_installer(target_dir)
 
         extensions.list_extensions()
-        return [extension_table(), html.escape(f"Installed into {target_dir}. Use Installed tab to restart.")]
+        return [extension_table(), html.escape(f"تم التثبيت في {target_dir}. استخدم تبويب المثبتة لإعادة التشغيل.")]
     finally:
         shutil.rmtree(tmpdir, True)
 
@@ -463,9 +490,9 @@ def refresh_available_extensions_from_data(selected_tags, showing_type, filterin
     <table id="available_extensions">
         <thead>
             <tr>
-                <th>Extension</th>
-                <th>Description</th>
-                <th>Action</th>
+                <th>الإضافة</th>
+                <th>الوصف</th>
+                <th>الإجراء</th>
             </tr>
         </thead>
         <tbody>
@@ -491,12 +518,16 @@ def refresh_available_extensions_from_data(selected_tags, showing_type, filterin
 
         if len(selected_tags) > 0:
             matched_tags = [x for x in extension_tags if x in selected_tags]
-            if filtering_type == 'or':
+            # تحويل القيم العربية إلى إنجليزية
+            filtering_type_en = 'or' if filtering_type == 'أو' else ('and' if filtering_type == 'و' else filtering_type)
+            showing_type_en = 'show' if showing_type == 'إظهار' else ('hide' if showing_type == 'إخفاء' else showing_type)
+            
+            if filtering_type_en == 'or':
                 need_hide = len(matched_tags) > 0
             else:
                 need_hide = len(matched_tags) == len(selected_tags)
 
-            if showing_type == 'show':
+            if showing_type_en == 'show':
                 need_hide = not need_hide
 
             if need_hide:
@@ -508,7 +539,7 @@ def refresh_available_extensions_from_data(selected_tags, showing_type, filterin
                 hidden += 1
                 continue
 
-        install_code = f"""<button onclick="install_extension_from_index(this, '{html.escape(url)}')" {"disabled=disabled" if existing else ""} class="lg secondary gradio-button custom-button">{"Install" if not existing else "Installed"}</button>"""
+        install_code = f"""<button onclick="install_extension_from_index(this, '{html.escape(url)}')" {"disabled=disabled" if existing else ""} class="lg secondary gradio-button custom-button">{"تثبيت" if not existing else "مثبت"}</button>"""
 
         tags_text = ", ".join([f"<span class='extension-tag' title='{tags.get(x, '')}'>{x}</span>" for x in extension_tags])
 
@@ -531,7 +562,7 @@ def refresh_available_extensions_from_data(selected_tags, showing_type, filterin
     """
 
     if hidden > 0:
-        code += f"<p>Extension hidden: {hidden}</p>"
+        code += f"<p>الإضافات المخفية: {hidden}</p>"
 
     return code, list(tags)
 
@@ -550,33 +581,42 @@ def create_ui():
 
     with gr.Blocks(analytics_enabled=False) as ui:
         with gr.Tabs(elem_id="tabs_extensions"):
-            with gr.TabItem("Installed", id="installed"):
+            with gr.TabItem("المثبتة", id="installed"):
 
                 with gr.Row(elem_id="extensions_installed_top"):
-                    apply_label = ("Apply and restart UI" if restart.is_restartable() else "Apply and quit")
+                    apply_label = ("تطبيق وإعادة تشغيل الواجهة" if restart.is_restartable() else "تطبيق والخروج")
                     apply = gr.Button(value=apply_label, variant="primary")
-                    check = gr.Button(value="Check for updates")
-                    extensions_disable_all = gr.Radio(label="Disable all extensions", choices=["none", "extra", "all"], value=shared.opts.disable_all_extensions, elem_id="extensions_disable_all")
+                    check = gr.Button(value="التحقق من التحديثات")
+                    extensions_disable_all = gr.Radio(label="تعطيل جميع الإضافات", choices=["لا شيء", "إضافات خارجية فقط", "الكل"], value=shared.opts.disable_all_extensions, elem_id="extensions_disable_all")
                     extensions_disabled_list = gr.Text(elem_id="extensions_disabled_list", visible=False, container=False)
                     extensions_update_list = gr.Text(elem_id="extensions_update_list", visible=False, container=False)
-                    refresh = gr.Button(value='Refresh', variant="compact")
+                    refresh = gr.Button(value='تحديث', variant="compact")
 
                 html = ""
 
-                if shared.cmd_opts.disable_all_extensions or shared.cmd_opts.disable_extra_extensions or shared.opts.disable_all_extensions != "none":
+                # تحويل القيمة العربية إلى إنجليزية للتحقق
+                disable_all_val = shared.opts.disable_all_extensions
+                if disable_all_val == "لا شيء":
+                    disable_all_val = "none"
+                elif disable_all_val == "إضافات خارجية فقط":
+                    disable_all_val = "extra"
+                elif disable_all_val == "الكل":
+                    disable_all_val = "all"
+                
+                if shared.cmd_opts.disable_all_extensions or shared.cmd_opts.disable_extra_extensions or disable_all_val != "none":
                     if shared.cmd_opts.disable_all_extensions:
-                        msg = '"--disable-all-extensions" was used, remove it to load all extensions again'
-                    elif shared.opts.disable_all_extensions != "none":
-                        msg = '"Disable all extensions" was set, change it to "none" to load all extensions again'
+                        msg = 'تم استخدام "--disable-all-extensions"، أزل هذا الخيار لتحميل جميع الإضافات مرة أخرى'
+                    elif disable_all_val != "none":
+                        msg = 'تم تعيين "تعطيل جميع الإضافات"، غيّره إلى "لا شيء" لتحميل جميع الإضافات مرة أخرى'
                     elif shared.cmd_opts.disable_extra_extensions:
-                        msg = '"--disable-extra-extensions" was used, remove it to load all extensions again'
+                        msg = 'تم استخدام "--disable-extra-extensions"، أزل هذا الخيار لتحميل جميع الإضافات مرة أخرى'
                     html = f'<span style="color: var(--primary-400);">{msg}</span>'
 
                 with gr.Row():
                     info = gr.HTML(html)
 
                 with gr.Row(elem_classes="progress-container"):
-                    extensions_table = gr.HTML('Loading...', elem_id="extensions_installed_html")
+                    extensions_table = gr.HTML('جاري التحميل...', elem_id="extensions_installed_html")
 
                 ui.load(fn=extension_table, inputs=[], outputs=[extensions_table], show_progress=False)
                 refresh.click(fn=extension_table, inputs=[], outputs=[extensions_table], show_progress=False)
@@ -595,24 +635,24 @@ def create_ui():
                     outputs=[extensions_table, info],
                 )
 
-            with gr.TabItem("Available", id="available"):
+            with gr.TabItem("المتاحة", id="available"):
                 with gr.Row():
-                    refresh_available_extensions_button = gr.Button(value="Load from:", variant="primary")
+                    refresh_available_extensions_button = gr.Button(value="تحميل من:", variant="primary")
                     extensions_index_url = os.environ.get('WEBUI_EXTENSIONS_INDEX', "https://raw.githubusercontent.com/AUTOMATIC1111/stable-diffusion-webui-extensions/master/index.json")
-                    available_extensions_index = gr.Text(value=extensions_index_url, label="Extension index URL", container=False)
+                    available_extensions_index = gr.Text(value=extensions_index_url, label="رابط فهرس الإضافات", container=False)
                     extension_to_install = gr.Text(elem_id="extension_to_install", visible=False)
                     install_extension_button = gr.Button(elem_id="install_extension_button", visible=False)
 
                 with gr.Row():
-                    selected_tags = gr.CheckboxGroup(value=["ads", "localization", "installed"], label="Extension tags", choices=["script", "ads", "localization", "installed"], elem_classes=['compact-checkbox-group'])
-                    sort_column = gr.Radio(value="newest first", label="Order", choices=["newest first", "oldest first", "a-z", "z-a", "internal order",'update time', 'create time', "stars"], type="index", elem_classes=['compact-checkbox-group'])
+                    selected_tags = gr.CheckboxGroup(value=["ads", "localization", "installed"], label="علامات الإضافات", choices=["script", "ads", "localization", "installed"], elem_classes=['compact-checkbox-group'])
+                    sort_column = gr.Radio(value="الأحدث أولاً", label="الترتيب", choices=["الأحدث أولاً", "الأقدم أولاً", "أ-ي", "ي-أ", "الترتيب الداخلي",'وقت التحديث', 'وقت الإنشاء', "النجوم"], type="index", elem_classes=['compact-checkbox-group'])
 
                 with gr.Row():
-                    showing_type = gr.Radio(value="hide", label="Showing type", choices=["hide", "show"], elem_classes=['compact-checkbox-group'])
-                    filtering_type = gr.Radio(value="or", label="Filtering type", choices=["or", "and"], elem_classes=['compact-checkbox-group'])
+                    showing_type = gr.Radio(value="إخفاء", label="نوع العرض", choices=["إخفاء", "إظهار"], elem_classes=['compact-checkbox-group'])
+                    filtering_type = gr.Radio(value="أو", label="نوع التصفية", choices=["أو", "و"], elem_classes=['compact-checkbox-group'])
 
                 with gr.Row():
-                    search_extensions_text = gr.Text(label="Search", container=False)
+                    search_extensions_text = gr.Text(label="بحث", container=False)
 
                 install_result = gr.HTML()
                 available_extensions_table = gr.HTML()
@@ -659,11 +699,11 @@ def create_ui():
                     outputs=[available_extensions_table, install_result]
                 )
 
-            with gr.TabItem("Install from URL", id="install_from_url"):
-                install_url = gr.Text(label="URL for extension's git repository")
-                install_branch = gr.Text(label="Specific branch name", placeholder="Leave empty for default main branch")
-                install_dirname = gr.Text(label="Local directory name", placeholder="Leave empty for auto")
-                install_button = gr.Button(value="Install", variant="primary")
+            with gr.TabItem("التثبيت من رابط", id="install_from_url"):
+                install_url = gr.Text(label="رابط مستودع git للإضافة")
+                install_branch = gr.Text(label="اسم الفرع المحدد", placeholder="اتركه فارغاً للفرع الرئيسي الافتراضي")
+                install_dirname = gr.Text(label="اسم المجلد المحلي", placeholder="اتركه فارغاً للتلقائي")
+                install_button = gr.Button(value="تثبيت", variant="primary")
                 install_result = gr.HTML(elem_id="extension_install_result")
 
                 install_button.click(
@@ -672,18 +712,18 @@ def create_ui():
                     outputs=[install_url, extensions_table, install_result],
                 )
 
-            with gr.TabItem("Backup/Restore"):
+            with gr.TabItem("النسخ الاحتياطي/الاستعادة"):
                 with gr.Row(elem_id="extensions_backup_top_row"):
-                    config_states_list = gr.Dropdown(label="Saved Configs", elem_id="extension_backup_saved_configs", value="Current", choices=["Current"] + list(config_states.all_config_states.keys()))
-                    modules.ui.create_refresh_button(config_states_list, config_states.list_config_states, lambda: {"choices": ["Current"] + list(config_states.all_config_states.keys())}, "refresh_config_states")
-                    config_restore_type = gr.Radio(label="State to restore", choices=["extensions", "webui", "both"], value="extensions", elem_id="extension_backup_restore_type")
-                    config_restore_button = gr.Button(value="Restore Selected Config", variant="primary", elem_id="extension_backup_restore")
+                    config_states_list = gr.Dropdown(label="الإعدادات المحفوظة", elem_id="extension_backup_saved_configs", value="الحالي", choices=["الحالي"] + list(config_states.all_config_states.keys()))
+                    modules.ui.create_refresh_button(config_states_list, config_states.list_config_states, lambda: {"choices": ["الحالي"] + list(config_states.all_config_states.keys())}, "refresh_config_states")
+                    config_restore_type = gr.Radio(label="الحالة المراد استعادتها", choices=["الإضافات فقط", "واجهة الويب فقط", "كلاهما"], value="الإضافات فقط", elem_id="extension_backup_restore_type")
+                    config_restore_button = gr.Button(value="استعادة الإعدادات المحددة", variant="primary", elem_id="extension_backup_restore")
                 with gr.Row(elem_id="extensions_backup_top_row2"):
-                    config_save_name = gr.Textbox("", placeholder="Config Name", show_label=False)
-                    config_save_button = gr.Button(value="Save Current Config")
+                    config_save_name = gr.Textbox("", placeholder="اسم الإعدادات", show_label=False)
+                    config_save_button = gr.Button(value="حفظ الإعدادات الحالية")
 
                 config_states_info = gr.HTML("")
-                config_states_table = gr.HTML("Loading...")
+                config_states_table = gr.HTML("جاري التحميل...")
                 ui.load(fn=update_config_states_table, inputs=[config_states_list], outputs=[config_states_table])
 
                 config_save_button.click(fn=save_config_state, inputs=[config_save_name], outputs=[config_states_list, config_states_info])

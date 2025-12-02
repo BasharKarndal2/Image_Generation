@@ -282,12 +282,12 @@ function modelmerger() {
 
 
 function ask_for_style_name(_, prompt_text, negative_prompt_text) {
-    var name_ = prompt('Style name:');
+    var name_ = prompt('اسم النمط:');
     return [name_, prompt_text, negative_prompt_text];
 }
 
 function confirm_clear_prompt(prompt, negative_prompt) {
-    if (confirm("Delete prompt?")) {
+    if (confirm("حذف النص؟")) {
         prompt = "";
         negative_prompt = "";
     }
@@ -347,7 +347,7 @@ let txt2img_textarea, img2img_textarea = undefined;
 
 function restart_reload() {
     document.body.style.backgroundColor = "var(--background-fill-primary)";
-    document.body.innerHTML = '<h1 style="font-family:monospace;margin-top:20%;color:lightgray;text-align:center;">Reloading...</h1>';
+    document.body.innerHTML = '<h1 style="font-family:monospace;margin-top:20%;color:lightgray;text-align:center;">جاري إعادة التحميل...</h1>';
     var requestPing = function() {
         requestGet("./internal/ping", {}, function(data) {
             location.reload();

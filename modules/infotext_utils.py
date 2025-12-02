@@ -118,8 +118,15 @@ def add_paste_fields(tabname, init_img, fields, override_settings_component=None
 
 def create_buttons(tabs_list):
     buttons = {}
+    tab_names_ar = {
+        "txt2img": "تحويل النص إلى صورة",
+        "img2img": "صورة إلى صورة",
+        "inpaint": "ترميم",
+        "extras": "أدوات إضافية"
+    }
     for tab in tabs_list:
-        buttons[tab] = gr.Button(f"Send to {tab}", elem_id=f"{tab}_tab")
+        tab_name = tab_names_ar.get(tab, tab)
+        buttons[tab] = gr.Button(f"إرسال إلى {tab_name}", elem_id=f"{tab}_tab")
     return buttons
 
 
@@ -142,8 +149,8 @@ def connect_paste_params_buttons():
         fields = paste_fields[binding.tabname]["fields"]
         override_settings_component = binding.override_settings_component or paste_fields[binding.tabname]["override_settings_component"]
 
-        destination_width_component = next(iter([field for field, name in fields if name == "Size-1"] if fields else []), None)
-        destination_height_component = next(iter([field for field, name in fields if name == "Size-2"] if fields else []), None)
+        destination_width_component = next(iter([field for field, name in fields if name == "Size-1" or name == "الحجم-1"] if fields else []), None)
+        destination_height_component = next(iter([field for field, name in fields if name == "Size-2" or name == "الحجم-2"] if fields else []), None)
 
         if binding.source_image_component and destination_image_component:
             need_send_dementions = destination_width_component and binding.tabname != 'inpaint'

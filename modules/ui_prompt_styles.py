@@ -60,26 +60,26 @@ class UiPromptStyles:
         self.main_ui_negative_prompt = main_ui_negative_prompt
 
         with gr.Row(elem_id=f"{tabname}_styles_row"):
-            self.dropdown = gr.Dropdown(label="Styles", show_label=False, elem_id=f"{tabname}_styles", choices=list(shared.prompt_styles.styles), value=[], multiselect=True, tooltip="Styles")
-            edit_button = ui_components.ToolButton(value=styles_edit_symbol, elem_id=f"{tabname}_styles_edit_button", tooltip="Edit styles")
+            self.dropdown = gr.Dropdown(label="الأنماط", show_label=False, elem_id=f"{tabname}_styles", choices=list(shared.prompt_styles.styles), value=[], multiselect=True, tooltip="الأنماط")
+            edit_button = ui_components.ToolButton(value=styles_edit_symbol, elem_id=f"{tabname}_styles_edit_button", tooltip="تعديل الأنماط")
 
         with gr.Box(elem_id=f"{tabname}_styles_dialog", elem_classes="popup-dialog") as styles_dialog:
             with gr.Row():
-                self.selection = gr.Dropdown(label="Styles", elem_id=f"{tabname}_styles_edit_select", choices=list(shared.prompt_styles.styles), value=[], allow_custom_value=True, info="Styles allow you to add custom text to prompt. Use the {prompt} token in style text, and it will be replaced with user's prompt when applying style. Otherwise, style's text will be added to the end of the prompt.")
+                self.selection = gr.Dropdown(label="الأنماط", elem_id=f"{tabname}_styles_edit_select", choices=list(shared.prompt_styles.styles), value=[], allow_custom_value=True, info="الأنماط تسمح لك بإضافة نص مخصص للنص. استخدم الرمز {prompt} في نص النمط، وسيتم استبداله بنص المستخدم عند تطبيق النمط. وإلا، سيتم إضافة نص النمط في نهاية النص.")
                 ui_common.create_refresh_button([self.dropdown, self.selection], shared.prompt_styles.reload, lambda: {"choices": list(shared.prompt_styles.styles)}, f"refresh_{tabname}_styles")
-                self.materialize = ui_components.ToolButton(value=styles_materialize_symbol, elem_id=f"{tabname}_style_apply_dialog", tooltip="Apply all selected styles from the style selection dropdown in main UI to the prompt.")
-                self.copy = ui_components.ToolButton(value=styles_copy_symbol, elem_id=f"{tabname}_style_copy", tooltip="Copy main UI prompt to style.")
+                self.materialize = ui_components.ToolButton(value=styles_materialize_symbol, elem_id=f"{tabname}_style_apply_dialog", tooltip="تطبيق جميع الأنماط المحددة من قائمة الأنماط في الواجهة الرئيسية على النص.")
+                self.copy = ui_components.ToolButton(value=styles_copy_symbol, elem_id=f"{tabname}_style_copy", tooltip="نسخ النص من الواجهة الرئيسية إلى النمط.")
 
             with gr.Row():
-                self.prompt = gr.Textbox(label="Prompt", show_label=True, elem_id=f"{tabname}_edit_style_prompt", lines=3, elem_classes=["prompt"])
+                self.prompt = gr.Textbox(label="النص", show_label=True, elem_id=f"{tabname}_edit_style_prompt", lines=3, elem_classes=["prompt"])
 
             with gr.Row():
-                self.neg_prompt = gr.Textbox(label="Negative prompt", show_label=True, elem_id=f"{tabname}_edit_style_neg_prompt", lines=3, elem_classes=["prompt"])
+                self.neg_prompt = gr.Textbox(label="النص السلبي", show_label=True, elem_id=f"{tabname}_edit_style_neg_prompt", lines=3, elem_classes=["prompt"])
 
             with gr.Row():
-                self.save = gr.Button('Save', variant='primary', elem_id=f'{tabname}_edit_style_save', visible=False)
-                self.delete = gr.Button('Delete', variant='primary', elem_id=f'{tabname}_edit_style_delete', visible=False)
-                self.close = gr.Button('Close', variant='secondary', elem_id=f'{tabname}_edit_style_close')
+                self.save = gr.Button('حفظ', variant='primary', elem_id=f'{tabname}_edit_style_save', visible=False)
+                self.delete = gr.Button('حذف', variant='primary', elem_id=f'{tabname}_edit_style_delete', visible=False)
+                self.close = gr.Button('إغلاق', variant='secondary', elem_id=f'{tabname}_edit_style_close')
 
         self.selection.change(
             fn=select_style,
@@ -97,7 +97,7 @@ class UiPromptStyles:
 
         self.delete.click(
             fn=delete_style,
-            _js='function(name){ if(name == "") return ""; return confirm("Delete style " + name + "?") ? name : ""; }',
+            _js='function(name){ if(name == "") return ""; return confirm("حذف النمط " + name + "؟") ? name : ""; }',
             inputs=[self.selection],
             outputs=[self.selection, self.prompt, self.neg_prompt],
             show_progress=False,

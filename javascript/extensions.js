@@ -4,7 +4,7 @@ function extensions_apply(_disabled_list, _update_list, disable_all) {
     var update = [];
     const extensions_input = gradioApp().querySelectorAll('#extensions input[type="checkbox"]');
     if (extensions_input.length == 0) {
-        throw Error("Extensions page not yet loaded.");
+        throw Error("صفحة الإضافات لم يتم تحميلها بعد.");
     }
     extensions_input.forEach(function(x) {
         if (x.name.startsWith("enable_") && !x.checked) {
@@ -31,7 +31,7 @@ function extensions_check() {
     });
 
     gradioApp().querySelectorAll('#extensions .extension_status').forEach(function(x) {
-        x.innerHTML = "Loading...";
+            x.innerHTML = "جاري التحميل...";
     });
 
 
@@ -45,7 +45,7 @@ function extensions_check() {
 
 function install_extension_from_index(button, url) {
     button.disabled = "disabled";
-    button.value = "Installing...";
+    button.value = "جاري التثبيت...";
 
     var textarea = gradioApp().querySelector('#extension_to_install textarea');
     textarea.value = url;
@@ -55,22 +55,23 @@ function install_extension_from_index(button, url) {
 }
 
 function config_state_confirm_restore(_, config_state_name, config_restore_type) {
-    if (config_state_name == "Current") {
+    if (config_state_name == "الحالي") {
         return [false, config_state_name, config_restore_type];
     }
     let restored = "";
-    if (config_restore_type == "extensions") {
-        restored = "all saved extension versions";
-    } else if (config_restore_type == "webui") {
-        restored = "the webui version";
-    } else {
-        restored = "the webui version and all saved extension versions";
+    // تحويل القيم العربية إلى إنجليزية للتحقق
+    if (config_restore_type == "الإضافات فقط" || config_restore_type == "extensions") {
+        restored = "جميع إصدارات الإضافات المحفوظة";
+    } else if (config_restore_type == "واجهة الويب فقط" || config_restore_type == "webui") {
+        restored = "إصدار واجهة الويب";
+    } else if (config_restore_type == "كلاهما" || config_restore_type == "both") {
+        restored = "إصدار واجهة الويب وجميع إصدارات الإضافات المحفوظة";
     }
-    let confirmed = confirm("Are you sure you want to restore from this state?\nThis will reset " + restored + ".");
+    let confirmed = confirm("هل أنت متأكد أنك تريد الاستعادة من هذه الحالة؟\nسيتم إعادة تعيين " + restored + ".");
     if (confirmed) {
         restart_reload();
         gradioApp().querySelectorAll('#extensions .extension_status').forEach(function(x) {
-            x.innerHTML = "Loading...";
+            x.innerHTML = "جاري التحميل...";
         });
     }
     return [confirmed, config_state_name, config_restore_type];

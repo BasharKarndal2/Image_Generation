@@ -24,48 +24,48 @@ restricted_opts = {
     "clean_temp_dir_at_start",
 }
 
-categories.register_category("saving", "Saving images")
+categories.register_category("saving", "حفظ الصور")
 categories.register_category("sd", "Stable Diffusion")
-categories.register_category("ui", "User Interface")
-categories.register_category("system", "System")
-categories.register_category("postprocessing", "Postprocessing")
-categories.register_category("training", "Training")
+categories.register_category("ui", "واجهة المستخدم")
+categories.register_category("system", "النظام")
+categories.register_category("postprocessing", "المعالجة اللاحقة")
+categories.register_category("training", "التدريب")
 
-options_templates.update(options_section(('saving-images', "Saving images/grids", "saving"), {
-    "samples_save": OptionInfo(True, "Always save all generated images"),
-    "samples_format": OptionInfo('png', 'File format for images'),
-    "samples_filename_pattern": OptionInfo("", "Images filename pattern", component_args=hide_dirs).link("wiki", "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Custom-Images-Filename-Name-and-Subdirectory"),
-    "save_images_add_number": OptionInfo(True, "Add number to filename when saving", component_args=hide_dirs),
-    "save_images_replace_action": OptionInfo("Replace", "Saving the image to an existing file", gr.Radio, {"choices": ["Replace", "Add number suffix"], **hide_dirs}),
-    "grid_save": OptionInfo(True, "Always save all generated image grids"),
-    "grid_format": OptionInfo('png', 'File format for grids'),
-    "grid_extended_filename": OptionInfo(False, "Add extended info (seed, prompt) to filename when saving grid"),
-    "grid_only_if_multiple": OptionInfo(True, "Do not save grids consisting of one picture"),
-    "grid_prevent_empty_spots": OptionInfo(False, "Prevent empty spots in grid (when set to autodetect)"),
-    "grid_zip_filename_pattern": OptionInfo("", "Archive filename pattern", component_args=hide_dirs).link("wiki", "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Custom-Images-Filename-Name-and-Subdirectory"),
-    "n_rows": OptionInfo(-1, "Grid row count; use -1 for autodetect and 0 for it to be same as batch size", gr.Slider, {"minimum": -1, "maximum": 16, "step": 1}),
-    "font": OptionInfo("", "Font for image grids that have text"),
-    "grid_text_active_color": OptionInfo("#000000", "Text color for image grids", ui_components.FormColorPicker, {}),
-    "grid_text_inactive_color": OptionInfo("#999999", "Inactive text color for image grids", ui_components.FormColorPicker, {}),
-    "grid_background_color": OptionInfo("#ffffff", "Background color for image grids", ui_components.FormColorPicker, {}),
+options_templates.update(options_section(('saving-images', "حفظ الصور/الشبكات", "saving"), {
+    "samples_save": OptionInfo(True, "حفظ جميع الصور المُولَّدة دائماً"),
+    "samples_format": OptionInfo('png', 'تنسيق الملف للصور'),
+    "samples_filename_pattern": OptionInfo("", "نمط اسم ملف الصور", component_args=hide_dirs).link("wiki", "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Custom-Images-Filename-Name-and-Subdirectory"),
+    "save_images_add_number": OptionInfo(True, "إضافة رقم إلى اسم الملف عند الحفظ", component_args=hide_dirs),
+    "save_images_replace_action": OptionInfo("استبدال", "حفظ الصورة في ملف موجود", gr.Radio, {"choices": ["استبدال", "إضافة لاحقة رقم"], **hide_dirs}),
+    "grid_save": OptionInfo(True, "حفظ جميع شبكات الصور المُولَّدة دائماً"),
+    "grid_format": OptionInfo('png', 'تنسيق الملف للشبكات'),
+    "grid_extended_filename": OptionInfo(False, "إضافة معلومات موسعة (البذرة، النص) إلى اسم الملف عند حفظ الشبكة"),
+    "grid_only_if_multiple": OptionInfo(True, "عدم حفظ الشبكات المكونة من صورة واحدة"),
+    "grid_prevent_empty_spots": OptionInfo(False, "منع البقع الفارغة في الشبكة (عند تعيين الكشف التلقائي)"),
+    "grid_zip_filename_pattern": OptionInfo("", "نمط اسم ملف الأرشيف", component_args=hide_dirs).link("wiki", "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Custom-Images-Filename-Name-and-Subdirectory"),
+    "n_rows": OptionInfo(-1, "عدد صفوف الشبكة؛ استخدم -1 للكشف التلقائي و 0 لتكون نفس حجم الدفعة", gr.Slider, {"minimum": -1, "maximum": 16, "step": 1}),
+    "font": OptionInfo("", "الخط لشبكات الصور التي تحتوي على نص"),
+    "grid_text_active_color": OptionInfo("#000000", "لون النص لشبكات الصور", ui_components.FormColorPicker, {}),
+    "grid_text_inactive_color": OptionInfo("#999999", "لون النص غير النشط لشبكات الصور", ui_components.FormColorPicker, {}),
+    "grid_background_color": OptionInfo("#ffffff", "لون الخلفية لشبكات الصور", ui_components.FormColorPicker, {}),
 
-    "save_images_before_face_restoration": OptionInfo(False, "Save a copy of image before doing face restoration."),
-    "save_images_before_highres_fix": OptionInfo(False, "Save a copy of image before applying highres fix."),
-    "save_images_before_color_correction": OptionInfo(False, "Save a copy of image before applying color correction to img2img results"),
-    "save_mask": OptionInfo(False, "For inpainting, save a copy of the greyscale mask"),
-    "save_mask_composite": OptionInfo(False, "For inpainting, save a masked composite"),
-    "jpeg_quality": OptionInfo(80, "Quality for saved jpeg and avif images", gr.Slider, {"minimum": 1, "maximum": 100, "step": 1}),
-    "webp_lossless": OptionInfo(False, "Use lossless compression for webp images"),
-    "export_for_4chan": OptionInfo(True, "Save copy of large images as JPG").info("if the file size is above the limit, or either width or height are above the limit"),
-    "img_downscale_threshold": OptionInfo(4.0, "File size limit for the above option, MB", gr.Number),
-    "target_side_length": OptionInfo(4000, "Width/height limit for the above option, in pixels", gr.Number),
-    "img_max_size_mp": OptionInfo(200, "Maximum image size", gr.Number).info("in megapixels"),
+    "save_images_before_face_restoration": OptionInfo(False, "حفظ نسخة من الصورة قبل إجراء ترميم الوجه."),
+    "save_images_before_highres_fix": OptionInfo(False, "حفظ نسخة من الصورة قبل تطبيق إصلاح الدقة العالية."),
+    "save_images_before_color_correction": OptionInfo(False, "حفظ نسخة من الصورة قبل تطبيق تصحيح الألوان على نتائج img2img"),
+    "save_mask": OptionInfo(False, "للترميم، حفظ نسخة من القناع بتدرج رمادي"),
+    "save_mask_composite": OptionInfo(False, "للترميم، حفظ صورة مركبة مقنعة"),
+    "jpeg_quality": OptionInfo(80, "جودة صور JPEG و AVIF المحفوظة", gr.Slider, {"minimum": 1, "maximum": 100, "step": 1}),
+    "webp_lossless": OptionInfo(False, "استخدام ضغط بدون فقدان لصور WebP"),
+    "export_for_4chan": OptionInfo(True, "حفظ نسخة من الصور الكبيرة كـ JPG").info("إذا كان حجم الملف فوق الحد، أو كان العرض أو الارتفاع فوق الحد"),
+    "img_downscale_threshold": OptionInfo(4.0, "حد حجم الملف للخيار أعلاه، بالميجابايت", gr.Number),
+    "target_side_length": OptionInfo(4000, "حد العرض/الارتفاع للخيار أعلاه، بالبكسل", gr.Number),
+    "img_max_size_mp": OptionInfo(200, "الحد الأقصى لحجم الصورة", gr.Number).info("بالميجابكسل"),
 
-    "use_original_name_batch": OptionInfo(True, "Use original name for output filename during batch process in extras tab"),
-    "use_upscaler_name_as_suffix": OptionInfo(False, "Use upscaler name as filename suffix in the extras tab"),
-    "save_selected_only": OptionInfo(True, "When using 'Save' button, only save a single selected image"),
-    "save_write_log_csv": OptionInfo(True, "Write log.csv when saving images using 'Save' button"),
-    "save_init_img": OptionInfo(False, "Save init images when using img2img"),
+    "use_original_name_batch": OptionInfo(True, "استخدام الاسم الأصلي لاسم ملف الإخراج أثناء المعالجة الجماعية في تبويب الأدوات الإضافية"),
+    "use_upscaler_name_as_suffix": OptionInfo(False, "استخدام اسم أداة التكبير كلاحقة لاسم الملف في تبويب الأدوات الإضافية"),
+    "save_selected_only": OptionInfo(True, "عند استخدام زر 'حفظ'، حفظ صورة واحدة محددة فقط"),
+    "save_write_log_csv": OptionInfo(True, "كتابة log.csv عند حفظ الصور باستخدام زر 'حفظ'"),
+    "save_init_img": OptionInfo(False, "حفظ صور البداية عند استخدام img2img"),
 
     "temp_dir":  OptionInfo("", "Directory for temporary images; leave empty for default"),
     "clean_temp_dir_at_start": OptionInfo(False, "Cleanup non-default temporary directory when starting webui"),
@@ -76,46 +76,46 @@ options_templates.update(options_section(('saving-images', "Saving images/grids"
     "notification_volume": OptionInfo(100, "Notification sound volume", gr.Slider, {"minimum": 0, "maximum": 100, "step": 1}).info("in %"),
 }))
 
-options_templates.update(options_section(('saving-paths', "Paths for saving", "saving"), {
-    "outdir_samples": OptionInfo("", "Output directory for images; if empty, defaults to three directories below", component_args=hide_dirs),
-    "outdir_txt2img_samples": OptionInfo(util.truncate_path(os.path.join(default_output_dir, 'txt2img-images')), 'Output directory for txt2img images', component_args=hide_dirs),
-    "outdir_img2img_samples": OptionInfo(util.truncate_path(os.path.join(default_output_dir, 'img2img-images')), 'Output directory for img2img images', component_args=hide_dirs),
-    "outdir_extras_samples": OptionInfo(util.truncate_path(os.path.join(default_output_dir, 'extras-images')), 'Output directory for images from extras tab', component_args=hide_dirs),
-    "outdir_grids": OptionInfo("", "Output directory for grids; if empty, defaults to two directories below", component_args=hide_dirs),
-    "outdir_txt2img_grids": OptionInfo(util.truncate_path(os.path.join(default_output_dir, 'txt2img-grids')), 'Output directory for txt2img grids', component_args=hide_dirs),
-    "outdir_img2img_grids": OptionInfo(util.truncate_path(os.path.join(default_output_dir, 'img2img-grids')), 'Output directory for img2img grids', component_args=hide_dirs),
-    "outdir_save": OptionInfo(util.truncate_path(os.path.join(data_path, 'log', 'images')), "Directory for saving images using the Save button", component_args=hide_dirs),
-    "outdir_init_images": OptionInfo(util.truncate_path(os.path.join(default_output_dir, 'init-images')), "Directory for saving init images when using img2img", component_args=hide_dirs),
+options_templates.update(options_section(('saving-paths', "مسارات الحفظ", "saving"), {
+    "outdir_samples": OptionInfo("", "مجلد الإخراج للصور؛ إذا كان فارغاً، افتراضي إلى ثلاثة مجلدات أدناه", component_args=hide_dirs),
+    "outdir_txt2img_samples": OptionInfo(util.truncate_path(os.path.join(default_output_dir, 'txt2img-images')), 'مجلد الإخراج لصور txt2img', component_args=hide_dirs),
+    "outdir_img2img_samples": OptionInfo(util.truncate_path(os.path.join(default_output_dir, 'img2img-images')), 'مجلد الإخراج لصور img2img', component_args=hide_dirs),
+    "outdir_extras_samples": OptionInfo(util.truncate_path(os.path.join(default_output_dir, 'extras-images')), 'مجلد الإخراج للصور من تبويب الأدوات الإضافية', component_args=hide_dirs),
+    "outdir_grids": OptionInfo("", "مجلد الإخراج للشبكات؛ إذا كان فارغاً، افتراضي إلى مجلدين أدناه", component_args=hide_dirs),
+    "outdir_txt2img_grids": OptionInfo(util.truncate_path(os.path.join(default_output_dir, 'txt2img-grids')), 'مجلد الإخراج لشبكات txt2img', component_args=hide_dirs),
+    "outdir_img2img_grids": OptionInfo(util.truncate_path(os.path.join(default_output_dir, 'img2img-grids')), 'مجلد الإخراج لشبكات img2img', component_args=hide_dirs),
+    "outdir_save": OptionInfo(util.truncate_path(os.path.join(data_path, 'log', 'images')), "مجلد لحفظ الصور باستخدام زر الحفظ", component_args=hide_dirs),
+    "outdir_init_images": OptionInfo(util.truncate_path(os.path.join(default_output_dir, 'init-images')), "مجلد لحفظ صور البداية عند استخدام img2img", component_args=hide_dirs),
 }))
 
-options_templates.update(options_section(('saving-to-dirs', "Saving to a directory", "saving"), {
-    "save_to_dirs": OptionInfo(True, "Save images to a subdirectory"),
-    "grid_save_to_dirs": OptionInfo(True, "Save grids to a subdirectory"),
-    "use_save_to_dirs_for_ui": OptionInfo(False, "When using \"Save\" button, save images to a subdirectory"),
-    "directories_filename_pattern": OptionInfo("[date]", "Directory name pattern", component_args=hide_dirs).link("wiki", "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Custom-Images-Filename-Name-and-Subdirectory"),
-    "directories_max_prompt_words": OptionInfo(8, "Max prompt words for [prompt_words] pattern", gr.Slider, {"minimum": 1, "maximum": 20, "step": 1, **hide_dirs}),
+options_templates.update(options_section(('saving-to-dirs', "الحفظ في مجلد", "saving"), {
+    "save_to_dirs": OptionInfo(True, "حفظ الصور في مجلد فرعي"),
+    "grid_save_to_dirs": OptionInfo(True, "حفظ الشبكات في مجلد فرعي"),
+    "use_save_to_dirs_for_ui": OptionInfo(False, "عند استخدام زر \"حفظ\"، حفظ الصور في مجلد فرعي"),
+    "directories_filename_pattern": OptionInfo("[date]", "نمط اسم المجلد", component_args=hide_dirs).link("wiki", "https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Custom-Images-Filename-Name-and-Subdirectory"),
+    "directories_max_prompt_words": OptionInfo(8, "الحد الأقصى لكلمات النص لنمط [prompt_words]", gr.Slider, {"minimum": 1, "maximum": 20, "step": 1, **hide_dirs}),
 }))
 
-options_templates.update(options_section(('upscaling', "Upscaling", "postprocessing"), {
-    "ESRGAN_tile": OptionInfo(192, "Tile size for ESRGAN upscalers.", gr.Slider, {"minimum": 0, "maximum": 512, "step": 16}).info("0 = no tiling"),
-    "ESRGAN_tile_overlap": OptionInfo(8, "Tile overlap for ESRGAN upscalers.", gr.Slider, {"minimum": 0, "maximum": 48, "step": 1}).info("Low values = visible seam"),
-    "realesrgan_enabled_models": OptionInfo(["R-ESRGAN 4x+", "R-ESRGAN 4x+ Anime6B"], "Select which Real-ESRGAN models to show in the web UI.", gr.CheckboxGroup, lambda: {"choices": shared_items.realesrgan_models_names()}),
-    "dat_enabled_models": OptionInfo(["DAT x2", "DAT x3", "DAT x4"], "Select which DAT models to show in the web UI.", gr.CheckboxGroup, lambda: {"choices": shared_items.dat_models_names()}),
-    "DAT_tile": OptionInfo(192, "Tile size for DAT upscalers.", gr.Slider, {"minimum": 0, "maximum": 512, "step": 16}).info("0 = no tiling"),
-    "DAT_tile_overlap": OptionInfo(8, "Tile overlap for DAT upscalers.", gr.Slider, {"minimum": 0, "maximum": 48, "step": 1}).info("Low values = visible seam"),
-    "upscaler_for_img2img": OptionInfo(None, "Upscaler for img2img", gr.Dropdown, lambda: {"choices": [x.name for x in shared.sd_upscalers]}),
-    "set_scale_by_when_changing_upscaler": OptionInfo(False, "Automatically set the Scale by factor based on the name of the selected Upscaler."),
+options_templates.update(options_section(('upscaling', "التكبير", "postprocessing"), {
+    "ESRGAN_tile": OptionInfo(192, "حجم البلاطة لمكبرات ESRGAN.", gr.Slider, {"minimum": 0, "maximum": 512, "step": 16}).info("0 = بدون تجزئة"),
+    "ESRGAN_tile_overlap": OptionInfo(8, "تداخل البلاطة لمكبرات ESRGAN.", gr.Slider, {"minimum": 0, "maximum": 48, "step": 1}).info("القيم المنخفضة = خط واضح"),
+    "realesrgan_enabled_models": OptionInfo(["R-ESRGAN 4x+", "R-ESRGAN 4x+ Anime6B"], "اختر نماذج Real-ESRGAN التي تريد إظهارها في واجهة الويب.", gr.CheckboxGroup, lambda: {"choices": shared_items.realesrgan_models_names()}),
+    "dat_enabled_models": OptionInfo(["DAT x2", "DAT x3", "DAT x4"], "اختر نماذج DAT التي تريد إظهارها في واجهة الويب.", gr.CheckboxGroup, lambda: {"choices": shared_items.dat_models_names()}),
+    "DAT_tile": OptionInfo(192, "حجم البلاطة لمكبرات DAT.", gr.Slider, {"minimum": 0, "maximum": 512, "step": 16}).info("0 = بدون تجزئة"),
+    "DAT_tile_overlap": OptionInfo(8, "تداخل البلاطة لمكبرات DAT.", gr.Slider, {"minimum": 0, "maximum": 48, "step": 1}).info("القيم المنخفضة = خط واضح"),
+    "upscaler_for_img2img": OptionInfo(None, "أداة التكبير لـ img2img", gr.Dropdown, lambda: {"choices": [x.name for x in shared.sd_upscalers]}),
+    "set_scale_by_when_changing_upscaler": OptionInfo(False, "تعيين عامل التكبير تلقائياً بناءً على اسم أداة التكبير المحددة."),
 }))
 
-options_templates.update(options_section(('face-restoration', "Face restoration", "postprocessing"), {
-    "face_restoration": OptionInfo(False, "Restore faces", infotext='Face restoration').info("will use a third-party model on generation result to reconstruct faces"),
-    "face_restoration_model": OptionInfo("CodeFormer", "Face restoration model", gr.Radio, lambda: {"choices": [x.name() for x in shared.face_restorers]}),
-    "code_former_weight": OptionInfo(0.5, "CodeFormer weight", gr.Slider, {"minimum": 0, "maximum": 1, "step": 0.01}).info("0 = maximum effect; 1 = minimum effect"),
-    "face_restoration_unload": OptionInfo(False, "Move face restoration model from VRAM into RAM after processing"),
+options_templates.update(options_section(('face-restoration', "ترميم الوجوه", "postprocessing"), {
+    "face_restoration": OptionInfo(False, "ترميم الوجوه", infotext='Face restoration').info("سيستخدم نموذجاً من طرف ثالث على نتيجة التوليد لإعادة بناء الوجوه"),
+    "face_restoration_model": OptionInfo("CodeFormer", "نموذج ترميم الوجوه", gr.Radio, lambda: {"choices": [x.name() for x in shared.face_restorers]}),
+    "code_former_weight": OptionInfo(0.5, "وزن CodeFormer", gr.Slider, {"minimum": 0, "maximum": 1, "step": 0.01}).info("0 = أقصى تأثير؛ 1 = أقل تأثير"),
+    "face_restoration_unload": OptionInfo(False, "نقل نموذج ترميم الوجوه من VRAM إلى RAM بعد المعالجة"),
 }))
 
-options_templates.update(options_section(('system', "System", "system"), {
-    "auto_launch_browser": OptionInfo("Local", "Automatically open webui in browser on startup", gr.Radio, lambda: {"choices": ["Disable", "Local", "Remote"]}),
+options_templates.update(options_section(('system', "النظام", "system"), {
+    "auto_launch_browser": OptionInfo("Local", "فتح واجهة الويب تلقائياً في المتصفح عند البدء", gr.Radio, lambda: {"choices": ["تعطيل", "Local", "Remote"]}),
     "enable_console_prompts": OptionInfo(shared.cmd_opts.enable_console_prompts, "Print prompts to console when generating with txt2img and img2img."),
     "show_warnings": OptionInfo(False, "Show warnings in console.").needs_reload_ui(),
     "show_gradio_deprecation_warnings": OptionInfo(True, "Show gradio deprecation warnings in console.").needs_reload_ui(),
@@ -130,29 +130,29 @@ options_templates.update(options_section(('system', "System", "system"), {
     "dump_stacks_on_signal": OptionInfo(False, "Print stack traces before exiting the program with ctrl+c."),
 }))
 
-options_templates.update(options_section(('profiler', "Profiler", "system"), {
+options_templates.update(options_section(('profiler', "محلل الأداء", "system"), {
     "profiling_explanation": OptionHTML("""
-Those settings allow you to enable torch profiler when generating pictures.
-Profiling allows you to see which code uses how much of computer's resources during generation.
-Each generation writes its own profile to one file, overwriting previous.
-The file can be viewed in <a href="chrome:tracing">Chrome</a>, or on a <a href="https://ui.perfetto.dev/">Perfetto</a> web site.
-Warning: writing profile can take a lot of time, up to 30 seconds, and the file itelf can be around 500MB in size.
+تسمح لك هذه الإعدادات بتمكين محلل الأداء torch عند توليد الصور.
+يتيح لك التحليل رؤية أي كود يستخدم كم من موارد الكمبيوتر أثناء التوليد.
+كل توليد يكتب ملفه الخاص في ملف واحد، مستبدلاً السابق.
+يمكن عرض الملف في <a href="chrome:tracing">Chrome</a>، أو على موقع <a href="https://ui.perfetto.dev/">Perfetto</a>.
+تحذير: كتابة الملف قد تستغرق وقتاً طويلاً، حتى 30 ثانية، والملف نفسه قد يكون بحجم حوالي 500 ميجابايت.
 """),
-    "profiling_enable": OptionInfo(False, "Enable profiling"),
-    "profiling_activities": OptionInfo(["CPU"], "Activities", gr.CheckboxGroup, {"choices": ["CPU", "CUDA"]}),
-    "profiling_record_shapes": OptionInfo(True, "Record shapes"),
-    "profiling_profile_memory": OptionInfo(True, "Profile memory"),
-    "profiling_with_stack": OptionInfo(True, "Include python stack"),
-    "profiling_filename": OptionInfo("trace.json", "Profile filename"),
+    "profiling_enable": OptionInfo(False, "تمكين التحليل"),
+    "profiling_activities": OptionInfo(["CPU"], "الأنشطة", gr.CheckboxGroup, {"choices": ["CPU", "CUDA"]}),
+    "profiling_record_shapes": OptionInfo(True, "تسجيل الأشكال"),
+    "profiling_profile_memory": OptionInfo(True, "تحليل الذاكرة"),
+    "profiling_with_stack": OptionInfo(True, "تضمين مكدس Python"),
+    "profiling_filename": OptionInfo("trace.json", "اسم ملف التحليل"),
 }))
 
-options_templates.update(options_section(('API', "API", "system"), {
+options_templates.update(options_section(('API', "الواجهة البرمجية", "system"), {
     "api_enable_requests": OptionInfo(True, "Allow http:// and https:// URLs for input images in API", restrict_api=True),
     "api_forbid_local_requests": OptionInfo(True, "Forbid URLs to local resources", restrict_api=True),
     "api_useragent": OptionInfo("", "User agent for requests", restrict_api=True),
 }))
 
-options_templates.update(options_section(('training', "Training", "training"), {
+options_templates.update(options_section(('training', "التدريب", "training"), {
     "unload_models_when_training": OptionInfo(False, "Move VAE and CLIP to RAM when training if possible. Saves VRAM."),
     "pin_memory": OptionInfo(False, "Turn on pin_memory for DataLoader. Makes training slightly faster but can increase memory usage."),
     "save_optimizer_state": OptionInfo(False, "Saves Optimizer state as separate *.optim file. Training of embedding or HN can be resumed with the matching optim file."),
@@ -186,10 +186,10 @@ options_templates.update(options_section(('sd', "Stable Diffusion", "sd"), {
 }))
 
 options_templates.update(options_section(('sdxl', "Stable Diffusion XL", "sd"), {
-    "sdxl_crop_top": OptionInfo(0, "crop top coordinate"),
-    "sdxl_crop_left": OptionInfo(0, "crop left coordinate"),
-    "sdxl_refiner_low_aesthetic_score": OptionInfo(2.5, "SDXL low aesthetic score", gr.Number).info("used for refiner model negative prompt"),
-    "sdxl_refiner_high_aesthetic_score": OptionInfo(6.0, "SDXL high aesthetic score", gr.Number).info("used for refiner model prompt"),
+    "sdxl_crop_top": OptionInfo(0, "إحداثي القطع العلوي"),
+    "sdxl_crop_left": OptionInfo(0, "إحداثي القطع الأيسر"),
+    "sdxl_refiner_low_aesthetic_score": OptionInfo(2.5, "درجة SDXL الجمالية المنخفضة", gr.Number).info("تُستخدم للنص السلبي لنموذج المحسن"),
+    "sdxl_refiner_high_aesthetic_score": OptionInfo(6.0, "درجة SDXL الجمالية العالية", gr.Number).info("تُستخدم لنص نموذج المحسن"),
 }))
 
 options_templates.update(options_section(('sd3', "Stable Diffusion 3", "sd"), {
@@ -212,7 +212,7 @@ For img2img, VAE is used to process user's input image before the sampling, and 
     "sd_vae_decode_method": OptionInfo("Full", "VAE type for decode", gr.Radio, {"choices": ["Full", "TAESD"]}, infotext='VAE Decoder').info("method to decode latent to image"),
 }))
 
-options_templates.update(options_section(('img2img', "img2img", "sd"), {
+options_templates.update(options_section(('img2img', "صورة إلى صورة", "sd"), {
     "inpainting_mask_weight": OptionInfo(1.0, "Inpainting conditioning mask strength", gr.Slider, {"minimum": 0.0, "maximum": 1.0, "step": 0.01}, infotext='Conditional mask weight'),
     "initial_noise_multiplier": OptionInfo(1.0, "Noise multiplier for img2img", gr.Slider, {"minimum": 0.0, "maximum": 1.5, "step": 0.001}, infotext='Noise multiplier'),
     "img2img_extra_noise": OptionInfo(0.0, "Extra noise multiplier for img2img and hires fix", gr.Slider, {"minimum": 0.0, "maximum": 1.0, "step": 0.01}, infotext='Extra noise').info("0 = disabled (default); should be lower than denoising strength"),
@@ -229,7 +229,7 @@ options_templates.update(options_section(('img2img', "img2img", "sd"), {
     "overlay_inpaint": OptionInfo(True, "Overlay original for inpaint").info("when inpainting, overlay the original image over the areas that weren't inpainted."),
 }))
 
-options_templates.update(options_section(('optimizations', "Optimizations", "sd"), {
+options_templates.update(options_section(('optimizations', "التحسينات", "sd"), {
     "cross_attention_optimization": OptionInfo("Automatic", "Cross attention optimization", gr.Dropdown, lambda: {"choices": shared_items.cross_attention_optimizations()}),
     "s_min_uncond": OptionInfo(0.0, "Negative Guidance minimum sigma", gr.Slider, {"minimum": 0.0, "maximum": 15.0, "step": 0.01}, infotext='NGMS').link("PR", "https://github.com/AUTOMATIC1111/stablediffusion-webui/pull/9177").info("skip negative prompt for some steps when the image is almost ready; 0=disable, higher=faster"),
     "s_min_uncond_all": OptionInfo(False, "Negative Guidance minimum sigma all steps", infotext='NGMS all steps').info("By default, NGMS above skips every other step; this makes it skip all steps"),
@@ -244,7 +244,7 @@ options_templates.update(options_section(('optimizations', "Optimizations", "sd"
     "cache_fp16_weight": OptionInfo(False, "Cache FP16 weight for LoRA").info("Cache fp16 weight when enabling FP8, will increase the quality of LoRA. Use more system ram."),
 }))
 
-options_templates.update(options_section(('compatibility', "Compatibility", "sd"), {
+options_templates.update(options_section(('compatibility', "التوافق", "sd"), {
     "auto_backcompat": OptionInfo(True, "Automatic backward compatibility").info("automatically enable options for backwards compatibility when importing generation parameters from infotext that has program version."),
     "use_old_emphasis_implementation": OptionInfo(False, "Use old emphasis implementation. Can be useful to reproduce old seeds."),
     "use_old_karras_scheduler_sigmas": OptionInfo(False, "Use old karras scheduler sigmas (0.1 to 10)."),
@@ -256,7 +256,7 @@ options_templates.update(options_section(('compatibility', "Compatibility", "sd"
     "refiner_switch_by_sample_steps": OptionInfo(False, "Switch to refiner by sampling steps instead of model timesteps. Old behavior for refiner.", infotext="Refiner switch by sampling steps")
 }))
 
-options_templates.update(options_section(('interrogate', "Interrogate"), {
+options_templates.update(options_section(('interrogate', "الاستجواب"), {
     "interrogate_keep_models_in_memory": OptionInfo(False, "Keep models in VRAM"),
     "interrogate_return_ranks": OptionInfo(False, "Include ranks of model tags matches in results.").info("booru only"),
     "interrogate_clip_num_beams": OptionInfo(1, "BLIP: num_beams", gr.Slider, {"minimum": 1, "maximum": 16, "step": 1}),
@@ -271,7 +271,7 @@ options_templates.update(options_section(('interrogate', "Interrogate"), {
     "deepbooru_filter_tags": OptionInfo("", "deepbooru: filter out those tags").info("separate by comma"),
 }))
 
-options_templates.update(options_section(('extra_networks', "Extra Networks", "sd"), {
+options_templates.update(options_section(('extra_networks', "الشبكات الإضافية", "sd"), {
     "extra_networks_show_hidden_directories": OptionInfo(True, "Show hidden directories").info("directory is hidden if its name starts with \".\"."),
     "extra_networks_dir_button_function": OptionInfo(False, "Add a '/' to the beginning of directory buttons").info("Buttons will display the contents of the selected directory without acting as a search filter."),
     "extra_networks_hidden_models": OptionInfo("When searched", "Show cards for models in hidden directories", gr.Radio, {"choices": ["Always", "When searched", "Never"]}).info('"When searched" option will only show the item when the search string has 4 characters or more'),
@@ -293,7 +293,7 @@ options_templates.update(options_section(('extra_networks', "Extra Networks", "s
     "sd_hypernetwork": OptionInfo("None", "Add hypernetwork to prompt", gr.Dropdown, lambda: {"choices": ["None", *shared.hypernetworks]}, refresh=shared_items.reload_hypernetworks),
 }))
 
-options_templates.update(options_section(('ui_prompt_editing', "Prompt editing", "ui"), {
+options_templates.update(options_section(('ui_prompt_editing', "تعديل النص", "ui"), {
     "keyedit_precision_attention": OptionInfo(0.1, "Precision for (attention:1.1) when editing the prompt with Ctrl+up/down", gr.Slider, {"minimum": 0.01, "maximum": 0.2, "step": 0.001}),
     "keyedit_precision_extra": OptionInfo(0.05, "Precision for <extra networks:0.9> when editing the prompt with Ctrl+up/down", gr.Slider, {"minimum": 0.01, "maximum": 0.2, "step": 0.001}),
     "keyedit_delimiters": OptionInfo(r".,\/!?%^*;:{}=`~() ", "Word delimiters when editing the prompt with Ctrl+up/down"),
@@ -303,7 +303,7 @@ options_templates.update(options_section(('ui_prompt_editing', "Prompt editing",
     "include_styles_into_token_counters": OptionInfo(True, "Count tokens of enabled styles").info("When calculating how many tokens the prompt has, also consider tokens added by enabled styles."),
 }))
 
-options_templates.update(options_section(('ui_gallery', "Gallery", "ui"), {
+options_templates.update(options_section(('ui_gallery', "المعرض", "ui"), {
     "return_grid": OptionInfo(True, "Show grid in gallery"),
     "do_not_show_images": OptionInfo(False, "Do not show any images in gallery"),
     "js_modal_lightbox": OptionInfo(True, "Full page image viewer: enable"),
@@ -316,7 +316,7 @@ options_templates.update(options_section(('ui_gallery', "Gallery", "ui"), {
     "open_dir_button_choice": OptionInfo("Subdirectory", "What directory the [📂] button opens", gr.Radio, {"choices": ["Output Root", "Subdirectory", "Subdirectory (even temp dir)"]}),
 }))
 
-options_templates.update(options_section(('ui_alternatives', "UI alternatives", "ui"), {
+options_templates.update(options_section(('ui_alternatives', "بدائل الواجهة", "ui"), {
     "compact_prompt_box": OptionInfo(False, "Compact prompt layout").info("puts prompt and negative prompt inside the Generate tab, leaving more vertical space for the image on the right").needs_reload_ui(),
     "samplers_in_dropdown": OptionInfo(True, "Use dropdown for sampler selection instead of radio group").needs_reload_ui(),
     "dimensions_and_batch_together": OptionInfo(True, "Show Width/Height and Batch sliders in same row").needs_reload_ui(),
@@ -328,7 +328,7 @@ options_templates.update(options_section(('ui_alternatives', "UI alternatives", 
     "interrupt_after_current": OptionInfo(True, "Don't Interrupt in the middle").info("when using Interrupt button, if generating more than one image, stop after the generation of an image has finished, instead of immediately"),
 }))
 
-options_templates.update(options_section(('ui', "User interface", "ui"), {
+options_templates.update(options_section(('ui', "واجهة المستخدم", "ui"), {
     "localization": OptionInfo("None", "Localization", gr.Dropdown, lambda: {"choices": ["None"] + list(localization.localizations.keys())}, refresh=lambda: localization.list_localizations(cmd_opts.localizations_dir)).needs_reload_ui(),
     "quicksettings_list": OptionInfo(["sd_model_checkpoint"], "Quicksettings list", ui_components.DropdownMulti, lambda: {"choices": list(shared.opts.data_labels.keys())}).js("info", "settingsHintsShowQuicksettings").info("setting entries that appear at the top of page rather than in settings tab").needs_reload_ui(),
     "ui_tab_order": OptionInfo([], "UI tab order", ui_components.DropdownMulti, lambda: {"choices": list(shared.tab_names)}).needs_reload_ui(),
@@ -344,7 +344,7 @@ options_templates.update(options_section(('ui', "User interface", "ui"), {
 }))
 
 
-options_templates.update(options_section(('infotext', "Infotext", "ui"), {
+options_templates.update(options_section(('infotext', "نص المعلومات", "ui"), {
     "infotext_explanation": OptionHTML("""
 Infotext is what this software calls the text that contains generation parameters and can be used to generate the same picture again.
 It is displayed in UI below the image. To use infotext, paste it into the prompt and click the ↙️ paste button.
@@ -369,7 +369,7 @@ It is displayed in UI below the image. To use infotext, paste it into the prompt
 
 }))
 
-options_templates.update(options_section(('ui', "Live previews", "ui"), {
+options_templates.update(options_section(('ui', "المعاينة المباشرة", "ui"), {
     "show_progressbar": OptionInfo(True, "Show progressbar"),
     "live_previews_enable": OptionInfo(True, "Show live previews of the created image"),
     "live_previews_image_format": OptionInfo("png", "Live preview file format", gr.Radio, {"choices": ["jpeg", "png", "webp"]}),
@@ -384,7 +384,7 @@ options_templates.update(options_section(('ui', "Live previews", "ui"), {
     "prevent_screen_sleep_during_generation": OptionInfo(True, "Prevent screen sleep during generation"),
 }))
 
-options_templates.update(options_section(('sampler-params', "Sampler parameters", "sd"), {
+options_templates.update(options_section(('sampler-params', "معاملات أخذ العينات", "sd"), {
     "hide_samplers": OptionInfo([], "Hide samplers in user interface", gr.CheckboxGroup, lambda: {"choices": [x.name for x in shared_items.list_samplers()]}).needs_reload_ui(),
     "eta_ddim": OptionInfo(0.0, "Eta for DDIM", gr.Slider, {"minimum": 0.0, "maximum": 1.0, "step": 0.01}, infotext='Eta DDIM').info("noise multiplier; higher = more unpredictable results"),
     "eta_ancestral": OptionInfo(1.0, "Eta for k-diffusion samplers", gr.Slider, {"minimum": 0.0, "maximum": 1.0, "step": 0.01}, infotext='Eta').info("noise multiplier; currently only applies to ancestral samplers (i.e. Euler a) and SDE samplers"),
@@ -409,7 +409,7 @@ options_templates.update(options_section(('sampler-params', "Sampler parameters"
     'beta_dist_beta': OptionInfo(0.6, "Beta scheduler - beta", gr.Slider, {"minimum": 0.01, "maximum": 1.0, "step": 0.01}, infotext='Beta scheduler beta').info('Default = 0.6; the beta parameter of the beta distribution used in Beta sampling'),
 }))
 
-options_templates.update(options_section(('postprocessing', "Postprocessing", "postprocessing"), {
+options_templates.update(options_section(('postprocessing', "المعالجة اللاحقة", "postprocessing"), {
     'postprocessing_enable_in_main_ui': OptionInfo([], "Enable postprocessing operations in txt2img and img2img tabs", ui_components.DropdownMulti, lambda: {"choices": [x.name for x in shared_items.postprocessing_scripts()]}),
     'postprocessing_disable_in_extras': OptionInfo([], "Disable postprocessing operations in extras tab", ui_components.DropdownMulti, lambda: {"choices": [x.name for x in shared_items.postprocessing_scripts()]}),
     'postprocessing_operation_order': OptionInfo([], "Postprocessing operation order", ui_components.DropdownMulti, lambda: {"choices": [x.name for x in shared_items.postprocessing_scripts()]}),
@@ -417,7 +417,7 @@ options_templates.update(options_section(('postprocessing', "Postprocessing", "p
     'postprocessing_existing_caption_action': OptionInfo("Ignore", "Action for existing captions", gr.Radio, {"choices": ["Ignore", "Keep", "Prepend", "Append"]}).info("when generating captions using postprocessing; Ignore = use generated; Keep = use original; Prepend/Append = combine both"),
 }))
 
-options_templates.update(options_section((None, "Hidden options"), {
+options_templates.update(options_section((None, "خيارات مخفية"), {
     "disabled_extensions": OptionInfo([], "Disable these extensions"),
     "disable_all_extensions": OptionInfo("none", "Disable all extensions (preserves the list of disabled extensions)", gr.Radio, {"choices": ["none", "extra", "all"]}),
     "restore_config_state_file": OptionInfo("", "Config state file to restore from, under 'config-states/' folder"),

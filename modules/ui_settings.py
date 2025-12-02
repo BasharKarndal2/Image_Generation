@@ -85,8 +85,8 @@ class UiSettings:
         try:
             opts.save(shared.config_filename)
         except RuntimeError:
-            return opts.dumpjson(), f'{len(changed)} settings changed without save: {", ".join(changed)}.'
-        return opts.dumpjson(), f'{len(changed)} settings changed{": " if changed else ""}{", ".join(changed)}.'
+            return opts.dumpjson(), f'تم تغيير {len(changed)} إعدادات دون حفظ: {", ".join(changed)}.'
+        return opts.dumpjson(), f'تم تغيير {len(changed)} إعدادات{": " if changed else ""}{", ".join(changed)}.'
 
     def run_settings_single(self, value, key):
         if not opts.same_type(value, opts.data_labels[key].default):
@@ -119,9 +119,9 @@ class UiSettings:
         with gr.Blocks(analytics_enabled=False) as settings_interface:
             with gr.Row():
                 with gr.Column(scale=6):
-                    self.submit = gr.Button(value="Apply settings", variant='primary', elem_id="settings_submit")
+                    self.submit = gr.Button(value="تطبيق الإعدادات", variant='primary', elem_id="settings_submit")
                 with gr.Column():
-                    restart_gradio = gr.Button(value='Reload UI', variant='primary', elem_id="settings_restart_gradio")
+                    restart_gradio = gr.Button(value='إعادة تحميل الواجهة', variant='primary', elem_id="settings_restart_gradio")
 
             self.result = gr.HTML(elem_id="settings_result")
 
@@ -166,39 +166,39 @@ class UiSettings:
                     current_row.__exit__()
                     current_tab.__exit__()
 
-                with gr.TabItem("Defaults", id="defaults", elem_id="settings_tab_defaults"):
+                with gr.TabItem("الافتراضيات", id="defaults", elem_id="settings_tab_defaults"):
                     loadsave.create_ui()
 
-                with gr.TabItem("Sysinfo", id="sysinfo", elem_id="settings_tab_sysinfo"):
-                    gr.HTML('<a href="./internal/sysinfo-download" class="sysinfo_big_link" download>Download system info</a><br /><a href="./internal/sysinfo" target="_blank">(or open as text in a new page)</a>', elem_id="sysinfo_download")
+                with gr.TabItem("معلومات النظام", id="sysinfo", elem_id="settings_tab_sysinfo"):
+                    gr.HTML('<a href="./internal/sysinfo-download" class="sysinfo_big_link" download>تحميل معلومات النظام</a><br /><a href="./internal/sysinfo" target="_blank">(أو افتح كنص في صفحة جديدة)</a>', elem_id="sysinfo_download")
 
                     with gr.Row():
                         with gr.Column(scale=1):
-                            sysinfo_check_file = gr.File(label="Check system info for validity", type='binary')
+                            sysinfo_check_file = gr.File(label="التحقق من صحة معلومات النظام", type='binary')
                         with gr.Column(scale=1):
                             sysinfo_check_output = gr.HTML("", elem_id="sysinfo_validity")
                         with gr.Column(scale=100):
                             pass
 
-                with gr.TabItem("Actions", id="actions", elem_id="settings_tab_actions"):
-                    request_notifications = gr.Button(value='Request browser notifications', elem_id="request_notifications")
-                    download_localization = gr.Button(value='Download localization template', elem_id="download_localization")
-                    reload_script_bodies = gr.Button(value='Reload custom script bodies (No ui updates, No restart)', variant='secondary', elem_id="settings_reload_script_bodies")
+                with gr.TabItem("إجراءات", id="actions", elem_id="settings_tab_actions"):
+                    request_notifications = gr.Button(value='طلب إشعارات المتصفح', elem_id="request_notifications")
+                    download_localization = gr.Button(value='تحميل قالب الترجمة', elem_id="download_localization")
+                    reload_script_bodies = gr.Button(value='إعادة تحميل سكريبتات مخصصة (بدون تحديثات واجهة، بدون إعادة تشغيل)', variant='secondary', elem_id="settings_reload_script_bodies")
                     with gr.Row():
-                        unload_sd_model = gr.Button(value='Unload SD checkpoint to RAM', elem_id="sett_unload_sd_model")
-                        reload_sd_model = gr.Button(value='Load SD checkpoint to VRAM from RAM', elem_id="sett_reload_sd_model")
+                        unload_sd_model = gr.Button(value='تفريغ نقطة التحقق SD إلى الذاكرة العشوائية', elem_id="sett_unload_sd_model")
+                        reload_sd_model = gr.Button(value='تحميل نقطة التحقق SD من الذاكرة العشوائية إلى VRAM', elem_id="sett_reload_sd_model")
                     with gr.Row():
-                        calculate_all_checkpoint_hash = gr.Button(value='Calculate hash for all checkpoint', elem_id="calculate_all_checkpoint_hash")
-                        calculate_all_checkpoint_hash_threads = gr.Number(value=1, label="Number of parallel calculations", elem_id="calculate_all_checkpoint_hash_threads", precision=0, minimum=1)
+                        calculate_all_checkpoint_hash = gr.Button(value='حساب التجزئة لجميع نقاط التحقق', elem_id="calculate_all_checkpoint_hash")
+                        calculate_all_checkpoint_hash_threads = gr.Number(value=1, label="عدد الحسابات المتوازية", elem_id="calculate_all_checkpoint_hash_threads", precision=0, minimum=1)
 
-                with gr.TabItem("Licenses", id="licenses", elem_id="settings_tab_licenses"):
+                with gr.TabItem("التراخيص", id="licenses", elem_id="settings_tab_licenses"):
                     gr.HTML(shared.html("licenses.html"), elem_id="licenses")
 
-                self.show_all_pages = gr.Button(value="Show all pages", elem_id="settings_show_all_pages")
-                self.show_one_page = gr.Button(value="Show only one page", elem_id="settings_show_one_page", visible=False)
+                self.show_all_pages = gr.Button(value="إظهار جميع الصفحات", elem_id="settings_show_all_pages")
+                self.show_one_page = gr.Button(value="إظهار صفحة واحدة فقط", elem_id="settings_show_one_page", visible=False)
                 self.show_one_page.click(lambda: None)
 
-                self.search_input = gr.Textbox(value="", elem_id="settings_search", max_lines=1, placeholder="Search...", show_label=False)
+                self.search_input = gr.Textbox(value="", elem_id="settings_search", max_lines=1, placeholder="بحث...", show_label=False)
 
                 self.text_settings = gr.Textbox(elem_id="settings_json", value=lambda: opts.dumpjson(), visible=False)
 
@@ -213,13 +213,13 @@ class UiSettings:
                 return handler
 
             unload_sd_model.click(
-                fn=call_func_and_return_text(sd_models.unload_model_weights, 'Unloaded the checkpoint'),
+                fn=call_func_and_return_text(sd_models.unload_model_weights, 'تم تفريغ نقطة التحقق'),
                 inputs=[],
                 outputs=[self.result]
             )
 
             reload_sd_model.click(
-                fn=call_func_and_return_text(lambda: sd_models.send_model_to_device(shared.sd_model), 'Loaded the checkpoint'),
+                fn=call_func_and_return_text(lambda: sd_models.send_model_to_device(shared.sd_model), 'تم تحميل نقطة التحقق'),
                 inputs=[],
                 outputs=[self.result]
             )
@@ -260,9 +260,9 @@ class UiSettings:
                     return ''
 
                 if sysinfo.check(x.decode('utf8', errors='ignore')):
-                    return 'Valid'
+                    return 'صالح'
 
-                return 'Invalid'
+                return 'غير صالح'
 
             sysinfo_check_file.change(
                 fn=check_file,
@@ -278,7 +278,7 @@ class UiSettings:
                     for _ in as_completed(futures):
                         completed += 1
                         print(f"{completed} / {len(checkpoints_list)} ")
-                    print("Finish calculating hash for all checkpoints")
+                    print("انتهى حساب التجزئة لجميع نقاط التحقق")
 
             calculate_all_checkpoint_hash.click(
                 fn=calculate_all_checkpoint_hash_fn,
@@ -339,7 +339,7 @@ class UiSettings:
                     show_progress=info.refresh is not None,
                 )
 
-        button_set_checkpoint = gr.Button('Change checkpoint', elem_id='change_checkpoint', visible=False)
+        button_set_checkpoint = gr.Button('تغيير نقطة التحقق', elem_id='change_checkpoint', visible=False)
         button_set_checkpoint.click(
             fn=lambda value, _: self.run_settings_single(value, key='sd_model_checkpoint'),
             _js="function(v){ var res = desiredCheckpointName; desiredCheckpointName = ''; return [res || v, null]; }",

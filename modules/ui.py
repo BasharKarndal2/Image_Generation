@@ -97,7 +97,7 @@ def calc_resolution_hires(enable, width, height, hr_scale, hr_resize_x, hr_resiz
     p = processing.StableDiffusionProcessingTxt2Img(width=width, height=height, enable_hr=True, hr_scale=hr_scale, hr_resize_x=hr_resize_x, hr_resize_y=hr_resize_y)
     p.calculate_target_resolution()
 
-    return f"from <span class='resolution'>{p.width}x{p.height}</span> to <span class='resolution'>{p.hr_resize_x or p.hr_upscale_to_x}x{p.hr_resize_y or p.hr_upscale_to_y}</span>"
+    return f"من <span class='resolution'>{p.width}x{p.height}</span> إلى <span class='resolution'>{p.hr_resize_x or p.hr_upscale_to_x}x{p.hr_resize_y or p.hr_upscale_to_y}</span>"
 
 
 def resize_from_to_html(width, height, scale_by):
@@ -105,9 +105,9 @@ def resize_from_to_html(width, height, scale_by):
     target_height = int(height * scale_by)
 
     if not target_width or not target_height:
-        return "no image selected"
+        return "لم يتم اختيار صورة"
 
-    return f"resize: from <span class='resolution'>{width}x{height}</span> to <span class='resolution'>{target_width}x{target_height}</span>"
+    return f"تغيير الحجم: من <span class='resolution'>{width}x{height}</span> إلى <span class='resolution'>{target_width}x{target_height}</span>"
 
 
 def process_interrogate(interrogation_function, mode, ii_input_dir, ii_output_dir, *ii_singles):
@@ -116,9 +116,9 @@ def process_interrogate(interrogation_function, mode, ii_input_dir, ii_output_di
     elif mode == 2:
         return [interrogation_function(ii_singles[mode]["image"]), None]
     elif mode == 5:
-        assert not shared.cmd_opts.hide_ui_dir_config, "Launched with --hide-ui-dir-config, batch img2img disabled"
+        assert not shared.cmd_opts.hide_ui_dir_config, "تم التشغيل مع --hide-ui-dir-config، تم تعطيل معالجة img2img الجماعية"
         images = shared.listfiles(ii_input_dir)
-        print(f"Will process {len(images)} images.")
+        print(f"سيتم معالجة {len(images)} صورة.")
         if ii_output_dir != "":
             os.makedirs(ii_output_dir, exist_ok=True)
         else:
@@ -144,7 +144,7 @@ def interrogate_deepbooru(image):
 
 
 def connect_clear_prompt(button):
-    """Given clear button, prompt, and token_counter objects, setup clear prompt button click event"""
+    """إعداد حدث النقر على زر مسح النص"""
     button.click(
         _js="clear_prompt",
         fn=None,
@@ -239,7 +239,7 @@ def ordered_ui_categories():
 
 
 def create_override_settings_dropdown(tabname, row):
-    dropdown = gr.Dropdown([], label="Override settings", visible=False, elem_id=f"{tabname}_override_settings", multiselect=True)
+    dropdown = gr.Dropdown([], label="تجاوز الإعدادات", visible=False, elem_id=f"{tabname}_override_settings", multiselect=True)
 
     dropdown.change(
         fn=lambda x: gr.Dropdown.update(visible=bool(x)),
@@ -276,10 +276,10 @@ def create_ui():
         extra_tabs = gr.Tabs(elem_id="txt2img_extra_tabs", elem_classes=["extra-networks"])
         extra_tabs.__enter__()
 
-        with gr.Tab("Generation", id="txt2img_generation") as txt2img_generation_tab, ResizeHandleRow(equal_height=False):
+        with gr.Tab("التوليد", id="txt2img_generation") as txt2img_generation_tab, ResizeHandleRow(equal_height=False):
             with ExitStack() as stack:
                 if shared.opts.txt2img_settings_accordion:
-                    stack.enter_context(gr.Accordion("Open for Settings", open=False))
+                    stack.enter_context(gr.Accordion("فتح الإعدادات", open=False))
                 stack.enter_context(gr.Column(variant='compact', elem_id="txt2img_settings"))
 
 
@@ -299,20 +299,20 @@ def create_ui():
                     elif category == "dimensions":
                         with FormRow():
                             with gr.Column(elem_id="txt2img_column_size", scale=4):
-                                width = gr.Slider(minimum=64, maximum=2048, step=8, label="Width", value=512, elem_id="txt2img_width")
-                                height = gr.Slider(minimum=64, maximum=2048, step=8, label="Height", value=512, elem_id="txt2img_height")
+                                width = gr.Slider(minimum=64, maximum=2048, step=8, label="العرض", value=512, elem_id="txt2img_width")
+                                height = gr.Slider(minimum=64, maximum=2048, step=8, label="الارتفاع", value=512, elem_id="txt2img_height")
 
                             with gr.Column(elem_id="txt2img_dimensions_row", scale=1, elem_classes="dimensions-tools"):
-                                res_switch_btn = ToolButton(value=switch_values_symbol, elem_id="txt2img_res_switch_btn", tooltip="Switch width/height")
+                                res_switch_btn = ToolButton(value=switch_values_symbol, elem_id="txt2img_res_switch_btn", tooltip="تبديل العرض/الارتفاع")
 
                             if opts.dimensions_and_batch_together:
                                 with gr.Column(elem_id="txt2img_column_batch"):
-                                    batch_count = gr.Slider(minimum=1, step=1, label='Batch count', value=1, elem_id="txt2img_batch_count")
-                                    batch_size = gr.Slider(minimum=1, maximum=8, step=1, label='Batch size', value=1, elem_id="txt2img_batch_size")
+                                    batch_count = gr.Slider(minimum=1, step=1, label='عدد الدُفعات', value=1, elem_id="txt2img_batch_count")
+                                    batch_size = gr.Slider(minimum=1, maximum=8, step=1, label='حجم الدفعة', value=1, elem_id="txt2img_batch_size")
 
                     elif category == "cfg":
                         with gr.Row():
-                            cfg_scale = gr.Slider(minimum=1.0, maximum=30.0, step=0.5, label='CFG Scale', value=7.0, elem_id="txt2img_cfg_scale")
+                            cfg_scale = gr.Slider(minimum=1.0, maximum=30.0, step=0.5, label='مقياس CFG', value=7.0, elem_id="txt2img_cfg_scale")
 
                     elif category == "checkboxes":
                         with FormRow(elem_classes="checkboxes-row", variant="compact"):
@@ -320,43 +320,43 @@ def create_ui():
 
                     elif category == "accordions":
                         with gr.Row(elem_id="txt2img_accordions", elem_classes="accordions"):
-                            with InputAccordion(False, label="Hires. fix", elem_id="txt2img_hr") as enable_hr:
+                            with InputAccordion(False, label="إصلاح الدقة العالية", elem_id="txt2img_hr") as enable_hr:
                                 with enable_hr.extra():
-                                    hr_final_resolution = FormHTML(value="", elem_id="txtimg_hr_finalres", label="Upscaled resolution", interactive=False, min_width=0)
+                                    hr_final_resolution = FormHTML(value="", elem_id="txtimg_hr_finalres", label="الدقة بعد التكبير", interactive=False, min_width=0)
 
                                 with FormRow(elem_id="txt2img_hires_fix_row1", variant="compact"):
-                                    hr_upscaler = gr.Dropdown(label="Upscaler", elem_id="txt2img_hr_upscaler", choices=[*shared.latent_upscale_modes, *[x.name for x in shared.sd_upscalers]], value=shared.latent_upscale_default_mode)
-                                    hr_second_pass_steps = gr.Slider(minimum=0, maximum=150, step=1, label='Hires steps', value=0, elem_id="txt2img_hires_steps")
-                                    denoising_strength = gr.Slider(minimum=0.0, maximum=1.0, step=0.01, label='Denoising strength', value=0.7, elem_id="txt2img_denoising_strength")
+                                    hr_upscaler = gr.Dropdown(label="أداة التكبير", elem_id="txt2img_hr_upscaler", choices=[*shared.latent_upscale_modes, *[x.name for x in shared.sd_upscalers]], value=shared.latent_upscale_default_mode)
+                                    hr_second_pass_steps = gr.Slider(minimum=0, maximum=150, step=1, label='عدد خطوات الدقة العالية', value=0, elem_id="txt2img_hires_steps")
+                                    denoising_strength = gr.Slider(minimum=0.0, maximum=1.0, step=0.01, label='قوة إزالة التشويش', value=0.7, elem_id="txt2img_denoising_strength")
 
                                 with FormRow(elem_id="txt2img_hires_fix_row2", variant="compact"):
-                                    hr_scale = gr.Slider(minimum=1.0, maximum=4.0, step=0.05, label="Upscale by", value=2.0, elem_id="txt2img_hr_scale")
-                                    hr_resize_x = gr.Slider(minimum=0, maximum=2048, step=8, label="Resize width to", value=0, elem_id="txt2img_hr_resize_x")
-                                    hr_resize_y = gr.Slider(minimum=0, maximum=2048, step=8, label="Resize height to", value=0, elem_id="txt2img_hr_resize_y")
+                                    hr_scale = gr.Slider(minimum=1.0, maximum=4.0, step=0.05, label="نسبة التكبير", value=2.0, elem_id="txt2img_hr_scale")
+                                    hr_resize_x = gr.Slider(minimum=0, maximum=2048, step=8, label="تغيير العرض إلى", value=0, elem_id="txt2img_hr_resize_x")
+                                    hr_resize_y = gr.Slider(minimum=0, maximum=2048, step=8, label="تغيير الارتفاع إلى", value=0, elem_id="txt2img_hr_resize_y")
 
                                 with FormRow(elem_id="txt2img_hires_fix_row3", variant="compact", visible=opts.hires_fix_show_sampler) as hr_sampler_container:
 
-                                    hr_checkpoint_name = gr.Dropdown(label='Checkpoint', elem_id="hr_checkpoint", choices=["Use same checkpoint"] + modules.sd_models.checkpoint_tiles(use_short=True), value="Use same checkpoint")
-                                    create_refresh_button(hr_checkpoint_name, modules.sd_models.list_models, lambda: {"choices": ["Use same checkpoint"] + modules.sd_models.checkpoint_tiles(use_short=True)}, "hr_checkpoint_refresh")
+                                    hr_checkpoint_name = gr.Dropdown(label='نقطة الحفظ', elem_id="hr_checkpoint", choices=["استخدام نفس نقطة التحقق"] + modules.sd_models.checkpoint_tiles(use_short=True), value="استخدام نفس نقطة التحقق")
+                                    create_refresh_button(hr_checkpoint_name, modules.sd_models.list_models, lambda: {"choices": ["استخدام نفس نقطة التحقق"] + modules.sd_models.checkpoint_tiles(use_short=True)}, "hr_checkpoint_refresh")
 
-                                    hr_sampler_name = gr.Dropdown(label='Hires sampling method', elem_id="hr_sampler", choices=["Use same sampler"] + sd_samplers.visible_sampler_names(), value="Use same sampler")
-                                    hr_scheduler = gr.Dropdown(label='Hires schedule type', elem_id="hr_scheduler", choices=["Use same scheduler"] + [x.label for x in sd_schedulers.schedulers], value="Use same scheduler")
+                                    hr_sampler_name = gr.Dropdown(label='طريقة أخذ العينات للدقة العالية', elem_id="hr_sampler", choices=["استخدام نفس طريقة أخذ العينات"] + sd_samplers.visible_sampler_names(), value="استخدام نفس طريقة أخذ العينات")
+                                    hr_scheduler = gr.Dropdown(label='نوع الجدولة للدقة العالية', elem_id="hr_scheduler", choices=["استخدام نفس نوع الجدولة"] + [x.label for x in sd_schedulers.schedulers], value="استخدام نفس نوع الجدولة")
 
                                 with FormRow(elem_id="txt2img_hires_fix_row4", variant="compact", visible=opts.hires_fix_show_prompts) as hr_prompts_container:
                                     with gr.Column(scale=80):
                                         with gr.Row():
-                                            hr_prompt = gr.Textbox(label="Hires prompt", elem_id="hires_prompt", show_label=False, lines=3, placeholder="Prompt for hires fix pass.\nLeave empty to use the same prompt as in first pass.", elem_classes=["prompt"])
+                                            hr_prompt = gr.Textbox(label="نص الدقة العالية", elem_id="hires_prompt", show_label=False, lines=3, placeholder="نص تمريرة إصلاح الدقة العالية.\nاتركه فارغًا لاستخدام نفس النص في التمريرة الأولى.", elem_classes=["prompt"])
                                     with gr.Column(scale=80):
                                         with gr.Row():
-                                            hr_negative_prompt = gr.Textbox(label="Hires negative prompt", elem_id="hires_neg_prompt", show_label=False, lines=3, placeholder="Negative prompt for hires fix pass.\nLeave empty to use the same negative prompt as in first pass.", elem_classes=["prompt"])
+                                            hr_negative_prompt = gr.Textbox(label="النص السلبي للدقة العالية", elem_id="hires_neg_prompt", show_label=False, lines=3, placeholder="النص السلبي لتمرير إصلاح الدقة العالية.\nاتركه فارغًا لاستخدام نفس النص السلبي في التمريرة الأولى.", elem_classes=["prompt"])
 
                             scripts.scripts_txt2img.setup_ui_for_section(category)
 
                     elif category == "batch":
                         if not opts.dimensions_and_batch_together:
                             with FormRow(elem_id="txt2img_column_batch"):
-                                batch_count = gr.Slider(minimum=1, step=1, label='Batch count', value=1, elem_id="txt2img_batch_count")
-                                batch_size = gr.Slider(minimum=1, maximum=8, step=1, label='Batch size', value=1, elem_id="txt2img_batch_size")
+                                batch_count = gr.Slider(minimum=1, step=1, label='عدد الدُفعات', value=1, elem_id="txt2img_batch_count")
+                                batch_size = gr.Slider(minimum=1, maximum=8, step=1, label='حجم الدفعة', value=1, elem_id="txt2img_batch_size")
 
                     elif category == "override_settings":
                         with FormRow(elem_id="txt2img_override_settings_row") as row:
@@ -457,27 +457,27 @@ def create_ui():
             )
 
             txt2img_paste_fields = [
-                PasteField(toprow.prompt, "Prompt", api="prompt"),
-                PasteField(toprow.negative_prompt, "Negative prompt", api="negative_prompt"),
-                PasteField(cfg_scale, "CFG scale", api="cfg_scale"),
-                PasteField(width, "Size-1", api="width"),
-                PasteField(height, "Size-2", api="height"),
-                PasteField(batch_size, "Batch size", api="batch_size"),
-                PasteField(toprow.ui_styles.dropdown, lambda d: d["Styles array"] if isinstance(d.get("Styles array"), list) else gr.update(), api="styles"),
-                PasteField(denoising_strength, "Denoising strength", api="denoising_strength"),
-                PasteField(enable_hr, lambda d: "Denoising strength" in d and ("Hires upscale" in d or "Hires upscaler" in d or "Hires resize-1" in d), api="enable_hr"),
-                PasteField(hr_scale, "Hires upscale", api="hr_scale"),
-                PasteField(hr_upscaler, "Hires upscaler", api="hr_upscaler"),
-                PasteField(hr_second_pass_steps, "Hires steps", api="hr_second_pass_steps"),
-                PasteField(hr_resize_x, "Hires resize-1", api="hr_resize_x"),
-                PasteField(hr_resize_y, "Hires resize-2", api="hr_resize_y"),
-                PasteField(hr_checkpoint_name, "Hires checkpoint", api="hr_checkpoint_name"),
+                PasteField(toprow.prompt, "النص", api="prompt"),
+                PasteField(toprow.negative_prompt, "النص السلبي", api="negative_prompt"),
+                PasteField(cfg_scale, "مقياس CFG", api="cfg_scale"),
+                PasteField(width, "الحجم-1", api="width"),
+                PasteField(height, "الحجم-2", api="height"),
+                PasteField(batch_size, "حجم الدفعة", api="batch_size"),
+                PasteField(toprow.ui_styles.dropdown, lambda d: d["مصفوفة الأنماط"] if isinstance(d.get("مصفوفة الأنماط"), list) else gr.update(), api="styles"),
+                PasteField(denoising_strength, "قوة إزالة التشويش", api="denoising_strength"),
+                PasteField(enable_hr, lambda d: "قوة إزالة التشويش" in d and ("تكبير الدقة العالية" in d or "أداة تكبير الدقة العالية" in d or "تغيير حجم الدقة العالية-1" in d), api="enable_hr"),
+                PasteField(hr_scale, "تكبير الدقة العالية", api="hr_scale"),
+                PasteField(hr_upscaler, "أداة تكبير الدقة العالية", api="hr_upscaler"),
+                PasteField(hr_second_pass_steps, "خطوات الدقة العالية", api="hr_second_pass_steps"),
+                PasteField(hr_resize_x, "تغيير حجم الدقة العالية-1", api="hr_resize_x"),
+                PasteField(hr_resize_y, "تغيير حجم الدقة العالية-2", api="hr_resize_y"),
+                PasteField(hr_checkpoint_name, "نقطة تحقق الدقة العالية", api="hr_checkpoint_name"),
                 PasteField(hr_sampler_name, sd_samplers.get_hr_sampler_from_infotext, api="hr_sampler_name"),
                 PasteField(hr_scheduler, sd_samplers.get_hr_scheduler_from_infotext, api="hr_scheduler"),
-                PasteField(hr_sampler_container, lambda d: gr.update(visible=True) if d.get("Hires sampler", "Use same sampler") != "Use same sampler" or d.get("Hires checkpoint", "Use same checkpoint") != "Use same checkpoint" or d.get("Hires schedule type", "Use same scheduler") != "Use same scheduler" else gr.update()),
-                PasteField(hr_prompt, "Hires prompt", api="hr_prompt"),
-                PasteField(hr_negative_prompt, "Hires negative prompt", api="hr_negative_prompt"),
-                PasteField(hr_prompts_container, lambda d: gr.update(visible=True) if d.get("Hires prompt", "") != "" or d.get("Hires negative prompt", "") != "" else gr.update()),
+                PasteField(hr_sampler_container, lambda d: gr.update(visible=True) if d.get("مُولّد الدقة العالية", "استخدام نفس طريقة أخذ العينات") != "استخدام نفس طريقة أخذ العينات" or d.get("نقطة تحقق الدقة العالية", "استخدام نفس نقطة التحقق") != "استخدام نفس نقطة التحقق" or d.get("نوع جدولة الدقة العالية", "استخدام نفس نوع الجدولة") != "استخدام نفس نوع الجدولة" else gr.update()),
+                PasteField(hr_prompt, "نص الدقة العالية", api="hr_prompt"),
+                PasteField(hr_negative_prompt, "النص السلبي للدقة العالية", api="hr_negative_prompt"),
+                PasteField(hr_prompts_container, lambda d: gr.update(visible=True) if d.get("نص الدقة العالية", "") != "" or d.get("النص السلبي للدقة العالية", "") != "" else gr.update()),
                 *scripts.scripts_txt2img.infotext_fields
             ]
             parameters_copypaste.add_paste_fields("txt2img", None, txt2img_paste_fields, override_settings)
@@ -517,10 +517,10 @@ def create_ui():
         extra_tabs = gr.Tabs(elem_id="img2img_extra_tabs", elem_classes=["extra-networks"])
         extra_tabs.__enter__()
 
-        with gr.Tab("Generation", id="img2img_generation") as img2img_generation_tab, ResizeHandleRow(equal_height=False):
+        with gr.Tab("التوليد", id="img2img_generation") as img2img_generation_tab, ResizeHandleRow(equal_height=False):
             with ExitStack() as stack:
                 if shared.opts.img2img_settings_accordion:
-                    stack.enter_context(gr.Accordion("Open for Settings", open=False))
+                    stack.enter_context(gr.Accordion("فتح الإعدادات", open=False))
                 stack.enter_context(gr.Column(variant='compact', elem_id="img2img_settings"))
 
                 copy_image_buttons = []
@@ -528,9 +528,9 @@ def create_ui():
 
                 def add_copy_image_controls(tab_name, elem):
                     with gr.Row(variant="compact", elem_id=f"img2img_copy_to_{tab_name}"):
-                        gr.HTML("Copy image to: ", elem_id=f"img2img_label_copy_to_{tab_name}")
+                        gr.HTML("نسخ الصورة إلى: ", elem_id=f"img2img_label_copy_to_{tab_name}")
 
-                        for title, name in zip(['img2img', 'sketch', 'inpaint', 'inpaint sketch'], ['img2img', 'sketch', 'inpaint', 'inpaint_sketch']):
+                        for title, name in zip(['صورة إلى صورة', 'رسم', 'ترميم', 'ترميم مع رسم'], ['img2img', 'sketch', 'inpaint', 'inpaint_sketch']):
                             if name == tab_name:
                                 gr.Button(title, interactive=False)
                                 copy_image_destinations[name] = elem
@@ -550,19 +550,19 @@ def create_ui():
                             img2img_selected_tab = gr.Number(value=0, visible=False)
 
                             with gr.TabItem('img2img', id='img2img', elem_id="img2img_img2img_tab") as tab_img2img:
-                                init_img = gr.Image(label="Image for img2img", elem_id="img2img_image", show_label=False, source="upload", interactive=True, type="pil", tool="editor", image_mode="RGBA", height=opts.img2img_editor_height)
+                                init_img = gr.Image(label="صورة لـ img2img", elem_id="img2img_image", show_label=False, source="upload", interactive=True, type="pil", tool="editor", image_mode="RGBA", height=opts.img2img_editor_height)
                                 add_copy_image_controls('img2img', init_img)
 
-                            with gr.TabItem('Sketch', id='img2img_sketch', elem_id="img2img_img2img_sketch_tab") as tab_sketch:
-                                sketch = gr.Image(label="Image for img2img", elem_id="img2img_sketch", show_label=False, source="upload", interactive=True, type="pil", tool="color-sketch", image_mode="RGB", height=opts.img2img_editor_height, brush_color=opts.img2img_sketch_default_brush_color)
+                            with gr.TabItem('رسم', id='img2img_sketch', elem_id="img2img_img2img_sketch_tab") as tab_sketch:
+                                sketch = gr.Image(label="صورة لـ img2img", elem_id="img2img_sketch", show_label=False, source="upload", interactive=True, type="pil", tool="color-sketch", image_mode="RGB", height=opts.img2img_editor_height, brush_color=opts.img2img_sketch_default_brush_color)
                                 add_copy_image_controls('sketch', sketch)
 
-                            with gr.TabItem('Inpaint', id='inpaint', elem_id="img2img_inpaint_tab") as tab_inpaint:
-                                init_img_with_mask = gr.Image(label="Image for inpainting with mask", show_label=False, elem_id="img2maskimg", source="upload", interactive=True, type="pil", tool="sketch", image_mode="RGBA", height=opts.img2img_editor_height, brush_color=opts.img2img_inpaint_mask_brush_color)
+                            with gr.TabItem('ترميم', id='inpaint', elem_id="img2img_inpaint_tab") as tab_inpaint:
+                                init_img_with_mask = gr.Image(label="صورة للترميم مع قناع", show_label=False, elem_id="img2maskimg", source="upload", interactive=True, type="pil", tool="sketch", image_mode="RGBA", height=opts.img2img_editor_height, brush_color=opts.img2img_inpaint_mask_brush_color)
                                 add_copy_image_controls('inpaint', init_img_with_mask)
 
-                            with gr.TabItem('Inpaint sketch', id='inpaint_sketch', elem_id="img2img_inpaint_sketch_tab") as tab_inpaint_color:
-                                inpaint_color_sketch = gr.Image(label="Color sketch inpainting", show_label=False, elem_id="inpaint_sketch", source="upload", interactive=True, type="pil", tool="color-sketch", image_mode="RGB", height=opts.img2img_editor_height, brush_color=opts.img2img_inpaint_sketch_default_brush_color)
+                            with gr.TabItem('ترميم مع رسم', id='inpaint_sketch', elem_id="img2img_inpaint_sketch_tab") as tab_inpaint_color:
+                                inpaint_color_sketch = gr.Image(label="ترميم مع تلوين ورسم", show_label=False, elem_id="inpaint_sketch", source="upload", interactive=True, type="pil", tool="color-sketch", image_mode="RGB", height=opts.img2img_editor_height, brush_color=opts.img2img_inpaint_sketch_default_brush_color)
                                 inpaint_color_sketch_orig = gr.State(None)
                                 add_copy_image_controls('inpaint_sketch', inpaint_color_sketch)
 
@@ -575,32 +575,32 @@ def create_ui():
 
                                 inpaint_color_sketch.change(update_orig, [inpaint_color_sketch, inpaint_color_sketch_orig], inpaint_color_sketch_orig)
 
-                            with gr.TabItem('Inpaint upload', id='inpaint_upload', elem_id="img2img_inpaint_upload_tab") as tab_inpaint_upload:
-                                init_img_inpaint = gr.Image(label="Image for img2img", show_label=False, source="upload", interactive=True, type="pil", elem_id="img_inpaint_base")
-                                init_mask_inpaint = gr.Image(label="Mask", source="upload", interactive=True, type="pil", image_mode="RGBA", elem_id="img_inpaint_mask")
+                            with gr.TabItem('ترميم (رفع صورة)', id='inpaint_upload', elem_id="img2img_inpaint_upload_tab") as tab_inpaint_upload:
+                                init_img_inpaint = gr.Image(label="صورة لـ img2img", show_label=False, source="upload", interactive=True, type="pil", elem_id="img_inpaint_base")
+                                init_mask_inpaint = gr.Image(label="القناع", source="upload", interactive=True, type="pil", image_mode="RGBA", elem_id="img_inpaint_mask")
 
-                            with gr.TabItem('Batch', id='batch', elem_id="img2img_batch_tab") as tab_batch:
+                            with gr.TabItem('معالجة جماعية', id='batch', elem_id="img2img_batch_tab") as tab_batch:
                                 with gr.Tabs(elem_id="img2img_batch_source"):
-                                    img2img_batch_source_type = gr.Textbox(visible=False, value="upload")
-                                    with gr.TabItem('Upload', id='batch_upload', elem_id="img2img_batch_upload_tab") as tab_batch_upload:
-                                        img2img_batch_upload = gr.Files(label="Files", interactive=True, elem_id="img2img_batch_upload")
-                                    with gr.TabItem('From directory', id='batch_from_dir', elem_id="img2img_batch_from_dir_tab") as tab_batch_from_dir:
-                                        hidden = '<br>Disabled when launched with --hide-ui-dir-config.' if shared.cmd_opts.hide_ui_dir_config else ''
+                                    img2img_batch_source_type = gr.Textbox(visible=False, value="رفع")
+                                    with gr.TabItem('رفع ملفات', id='batch_upload', elem_id="img2img_batch_upload_tab") as tab_batch_upload:
+                                        img2img_batch_upload = gr.Files(label="الملفات", interactive=True, elem_id="img2img_batch_upload")
+                                    with gr.TabItem('من مجلد', id='batch_from_dir', elem_id="img2img_batch_from_dir_tab") as tab_batch_from_dir:
+                                        hidden = '<br>معطل عند التشغيل مع --hide-ui-dir-config.' if shared.cmd_opts.hide_ui_dir_config else ''
                                         gr.HTML(
-                                            "<p style='padding-bottom: 1em;' class=\"text-gray-500\">Process images in a directory on the same machine where the server is running." +
-                                            "<br>Use an empty output directory to save pictures normally instead of writing to the output directory." +
-                                            f"<br>Add inpaint batch mask directory to enable inpaint batch processing."
+                                            "<p style='padding-bottom: 1em;' class=\"text-gray-500\">معالجة الصور في مجلد موجود على نفس الجهاز الذي يعمل عليه الخادم." +
+                                            "<br>استخدم مجلد خرج فارغًا لحفظ الصور في المسار الافتراضي بدل الكتابة في مجلد الخرج." +
+                                            f"<br>أضف مجلد أقنعة الترميم للمعالجة الجماعية للترميم."
                                             f"{hidden}</p>"
                                         )
-                                        img2img_batch_input_dir = gr.Textbox(label="Input directory", **shared.hide_dirs, elem_id="img2img_batch_input_dir")
-                                        img2img_batch_output_dir = gr.Textbox(label="Output directory", **shared.hide_dirs, elem_id="img2img_batch_output_dir")
-                                        img2img_batch_inpaint_mask_dir = gr.Textbox(label="Inpaint batch mask directory (required for inpaint batch processing only)", **shared.hide_dirs, elem_id="img2img_batch_inpaint_mask_dir")
-                                tab_batch_upload.select(fn=lambda: "upload", inputs=[], outputs=[img2img_batch_source_type])
-                                tab_batch_from_dir.select(fn=lambda: "from dir", inputs=[], outputs=[img2img_batch_source_type])
-                                with gr.Accordion("PNG info", open=False):
-                                    img2img_batch_use_png_info = gr.Checkbox(label="Append png info to prompts", elem_id="img2img_batch_use_png_info")
-                                    img2img_batch_png_info_dir = gr.Textbox(label="PNG info directory", **shared.hide_dirs, placeholder="Leave empty to use input directory", elem_id="img2img_batch_png_info_dir")
-                                    img2img_batch_png_info_props = gr.CheckboxGroup(["Prompt", "Negative prompt", "Seed", "CFG scale", "Sampler", "Steps", "Model hash"], label="Parameters to take from png info", info="Prompts from png info will be appended to prompts set in ui.")
+                                        img2img_batch_input_dir = gr.Textbox(label="مجلد الإدخال", **shared.hide_dirs, elem_id="img2img_batch_input_dir")
+                                        img2img_batch_output_dir = gr.Textbox(label="مجلد الإخراج", **shared.hide_dirs, elem_id="img2img_batch_output_dir")
+                                        img2img_batch_inpaint_mask_dir = gr.Textbox(label="مجلد أقنعة الترميم الجماعي (مطلوب فقط للمعالجة الجماعية للترميم)", **shared.hide_dirs, elem_id="img2img_batch_inpaint_mask_dir")
+                                tab_batch_upload.select(fn=lambda: "رفع", inputs=[], outputs=[img2img_batch_source_type])
+                                tab_batch_from_dir.select(fn=lambda: "من مجلد", inputs=[], outputs=[img2img_batch_source_type])
+                                with gr.Accordion("معلومات PNG", open=False):
+                                    img2img_batch_use_png_info = gr.Checkbox(label="إضافة معلومات PNG إلى النصوص", elem_id="img2img_batch_use_png_info")
+                                    img2img_batch_png_info_dir = gr.Textbox(label="مجلد معلومات PNG", **shared.hide_dirs, placeholder="اتركه فارغًا لاستخدام مجلد الإدخال", elem_id="img2img_batch_png_info_dir")
+                                    img2img_batch_png_info_props = gr.CheckboxGroup(["النص", "النص السلبي", "البذرة", "مقياس CFG", "المُولّد", "الخطوات", "هاش النموذج"], label="المعلمات المأخوذة من معلومات PNG", info="سيتم إلحاق النصوص القادمة من معلومات PNG بالنصوص المحددة في الواجهة.")
 
                             img2img_tabs = [tab_img2img, tab_sketch, tab_inpaint, tab_inpaint_color, tab_inpaint_upload, tab_batch]
 
@@ -627,7 +627,7 @@ def create_ui():
                             )
 
                         with FormRow():
-                            resize_mode = gr.Radio(label="Resize mode", elem_id="resize_mode", choices=["Just resize", "Crop and resize", "Resize and fill", "Just resize (latent upscale)"], type="index", value="Just resize")
+                            resize_mode = gr.Radio(label="وضع تغيير الحجم", elem_id="resize_mode", choices=["تغيير الحجم فقط", "قص وتغيير الحجم", "تغيير الحجم وملء", "تغيير الحجم فقط (تكبير كامِن)"], type="index", value="تغيير الحجم فقط")
 
                     elif category == "dimensions":
                         with FormRow():
@@ -635,21 +635,21 @@ def create_ui():
                                 selected_scale_tab = gr.Number(value=0, visible=False)
 
                                 with gr.Tabs(elem_id="img2img_tabs_resize"):
-                                    with gr.Tab(label="Resize to", id="to", elem_id="img2img_tab_resize_to") as tab_scale_to:
+                                    with gr.Tab(label="تغيير الحجم إلى", id="to", elem_id="img2img_tab_resize_to") as tab_scale_to:
                                         with FormRow():
                                             with gr.Column(elem_id="img2img_column_size", scale=4):
-                                                width = gr.Slider(minimum=64, maximum=2048, step=8, label="Width", value=512, elem_id="img2img_width")
-                                                height = gr.Slider(minimum=64, maximum=2048, step=8, label="Height", value=512, elem_id="img2img_height")
+                                                width = gr.Slider(minimum=64, maximum=2048, step=8, label="العرض", value=512, elem_id="img2img_width")
+                                                height = gr.Slider(minimum=64, maximum=2048, step=8, label="الارتفاع", value=512, elem_id="img2img_height")
                                             with gr.Column(elem_id="img2img_dimensions_row", scale=1, elem_classes="dimensions-tools"):
-                                                res_switch_btn = ToolButton(value=switch_values_symbol, elem_id="img2img_res_switch_btn", tooltip="Switch width/height")
-                                                detect_image_size_btn = ToolButton(value=detect_image_size_symbol, elem_id="img2img_detect_image_size_btn", tooltip="Auto detect size from img2img")
+                                                res_switch_btn = ToolButton(value=switch_values_symbol, elem_id="img2img_res_switch_btn", tooltip="تبديل العرض/الارتفاع")
+                                                detect_image_size_btn = ToolButton(value=detect_image_size_symbol, elem_id="img2img_detect_image_size_btn", tooltip="اكتشاف الحجم تلقائياً من img2img")
 
-                                    with gr.Tab(label="Resize by", id="by", elem_id="img2img_tab_resize_by") as tab_scale_by:
-                                        scale_by = gr.Slider(minimum=0.05, maximum=4.0, step=0.05, label="Scale", value=1.0, elem_id="img2img_scale")
+                                    with gr.Tab(label="تغيير الحجم بنسبة", id="by", elem_id="img2img_tab_resize_by") as tab_scale_by:
+                                        scale_by = gr.Slider(minimum=0.05, maximum=4.0, step=0.05, label="مقياس", value=1.0, elem_id="img2img_scale")
 
                                         with FormRow():
                                             scale_by_html = FormHTML(resize_from_to_html(0, 0, 0.0), elem_id="img2img_scale_resolution_preview")
-                                            gr.Slider(label="Unused", elem_id="img2img_unused_scale_by_slider")
+                                            gr.Slider(label="غير مستخدم", elem_id="img2img_unused_scale_by_slider")
                                             button_update_resize_to = gr.Button(visible=False, elem_id="img2img_update_resize_to")
 
                                     on_change_args = dict(
@@ -668,16 +668,16 @@ def create_ui():
 
                             if opts.dimensions_and_batch_together:
                                 with gr.Column(elem_id="img2img_column_batch"):
-                                    batch_count = gr.Slider(minimum=1, step=1, label='Batch count', value=1, elem_id="img2img_batch_count")
-                                    batch_size = gr.Slider(minimum=1, maximum=8, step=1, label='Batch size', value=1, elem_id="img2img_batch_size")
+                                    batch_count = gr.Slider(minimum=1, step=1, label='عدد الدُفعات', value=1, elem_id="img2img_batch_count")
+                                    batch_size = gr.Slider(minimum=1, maximum=8, step=1, label='حجم الدفعة', value=1, elem_id="img2img_batch_size")
 
                     elif category == "denoising":
-                        denoising_strength = gr.Slider(minimum=0.0, maximum=1.0, step=0.01, label='Denoising strength', value=0.75, elem_id="img2img_denoising_strength")
+                        denoising_strength = gr.Slider(minimum=0.0, maximum=1.0, step=0.01, label='قوة إزالة التشويش', value=0.75, elem_id="img2img_denoising_strength")
 
                     elif category == "cfg":
                         with gr.Row():
-                            cfg_scale = gr.Slider(minimum=1.0, maximum=30.0, step=0.5, label='CFG Scale', value=7.0, elem_id="img2img_cfg_scale")
-                            image_cfg_scale = gr.Slider(minimum=0, maximum=3.0, step=0.05, label='Image CFG Scale', value=1.5, elem_id="img2img_image_cfg_scale", visible=False)
+                            cfg_scale = gr.Slider(minimum=1.0, maximum=30.0, step=0.5, label='مقياس CFG', value=7.0, elem_id="img2img_cfg_scale")
+                            image_cfg_scale = gr.Slider(minimum=0, maximum=3.0, step=0.05, label='مقياس CFG للصورة', value=1.5, elem_id="img2img_image_cfg_scale", visible=False)
 
                     elif category == "checkboxes":
                         with FormRow(elem_classes="checkboxes-row", variant="compact"):
@@ -690,8 +690,8 @@ def create_ui():
                     elif category == "batch":
                         if not opts.dimensions_and_batch_together:
                             with FormRow(elem_id="img2img_column_batch"):
-                                batch_count = gr.Slider(minimum=1, step=1, label='Batch count', value=1, elem_id="img2img_batch_count")
-                                batch_size = gr.Slider(minimum=1, maximum=8, step=1, label='Batch size', value=1, elem_id="img2img_batch_size")
+                                batch_count = gr.Slider(minimum=1, step=1, label='عدد الدُفعات', value=1, elem_id="img2img_batch_count")
+                                batch_size = gr.Slider(minimum=1, maximum=8, step=1, label='حجم الدفعة', value=1, elem_id="img2img_batch_size")
 
                     elif category == "override_settings":
                         with FormRow(elem_id="img2img_override_settings_row") as row:
@@ -704,21 +704,21 @@ def create_ui():
                     elif category == "inpaint":
                         with FormGroup(elem_id="inpaint_controls", visible=False) as inpaint_controls:
                             with FormRow():
-                                mask_blur = gr.Slider(label='Mask blur', minimum=0, maximum=64, step=1, value=4, elem_id="img2img_mask_blur")
-                                mask_alpha = gr.Slider(label="Mask transparency", visible=False, elem_id="img2img_mask_alpha")
+                                mask_blur = gr.Slider(label='تشويش القناع', minimum=0, maximum=64, step=1, value=4, elem_id="img2img_mask_blur")
+                                mask_alpha = gr.Slider(label="شفافية القناع", visible=False, elem_id="img2img_mask_alpha")
 
                             with FormRow():
-                                inpainting_mask_invert = gr.Radio(label='Mask mode', choices=['Inpaint masked', 'Inpaint not masked'], value='Inpaint masked', type="index", elem_id="img2img_mask_mode")
+                                inpainting_mask_invert = gr.Radio(label='وضع القناع', choices=['ترميم المنطقة المغطاة', 'ترميم المنطقة غير المغطاة'], value='ترميم المنطقة المغطاة', type="index", elem_id="img2img_mask_mode")
 
                             with FormRow():
-                                inpainting_fill = gr.Radio(label='Masked content', choices=['fill', 'original', 'latent noise', 'latent nothing'], value='original', type="index", elem_id="img2img_inpainting_fill")
+                                inpainting_fill = gr.Radio(label='محتوى المنطقة المقنَّعة', choices=['ملء', 'أصلي', 'ضجيج كامِن', 'بدون كامِن'], value='أصلي', type="index", elem_id="img2img_inpainting_fill")
 
                             with FormRow():
                                 with gr.Column():
-                                    inpaint_full_res = gr.Radio(label="Inpaint area", choices=["Whole picture", "Only masked"], type="index", value="Whole picture", elem_id="img2img_inpaint_full_res")
+                                    inpaint_full_res = gr.Radio(label="منطقة الترميم", choices=["الصورة كاملة", "المنطقة المقنَّعة فقط"], type="index", value="الصورة كاملة", elem_id="img2img_inpaint_full_res")
 
                                 with gr.Column(scale=4):
-                                    inpaint_full_res_padding = gr.Slider(label='Only masked padding, pixels', minimum=0, maximum=256, step=4, value=32, elem_id="img2img_inpaint_full_res_padding")
+                                    inpaint_full_res_padding = gr.Slider(label='هامش المنطقة المقنَّعة (بالبكسل)', minimum=0, maximum=256, step=4, value=32, elem_id="img2img_inpaint_full_res_padding")
 
                     if category not in {"accordions"}:
                         scripts.scripts_img2img.setup_ui_for_section(category)
@@ -851,20 +851,20 @@ def create_ui():
             toprow.negative_token_button.click(fn=wrap_queued_call(update_negative_prompt_token_counter), inputs=[toprow.negative_prompt, steps, toprow.ui_styles.dropdown], outputs=[toprow.negative_token_counter])
 
             img2img_paste_fields = [
-                (toprow.prompt, "Prompt"),
-                (toprow.negative_prompt, "Negative prompt"),
-                (cfg_scale, "CFG scale"),
-                (image_cfg_scale, "Image CFG scale"),
-                (width, "Size-1"),
-                (height, "Size-2"),
-                (batch_size, "Batch size"),
-                (toprow.ui_styles.dropdown, lambda d: d["Styles array"] if isinstance(d.get("Styles array"), list) else gr.update()),
-                (denoising_strength, "Denoising strength"),
-                (mask_blur, "Mask blur"),
-                (inpainting_mask_invert, 'Mask mode'),
-                (inpainting_fill, 'Masked content'),
-                (inpaint_full_res, 'Inpaint area'),
-                (inpaint_full_res_padding, 'Masked area padding'),
+                (toprow.prompt, "النص"),
+                (toprow.negative_prompt, "النص السلبي"),
+                (cfg_scale, "مقياس CFG"),
+                (image_cfg_scale, "مقياس CFG للصورة"),
+                (width, "الحجم-1"),
+                (height, "الحجم-2"),
+                (batch_size, "حجم الدفعة"),
+                (toprow.ui_styles.dropdown, lambda d: d["مصفوفة الأنماط"] if isinstance(d.get("مصفوفة الأنماط"), list) else gr.update()),
+                (denoising_strength, "قوة إزالة التشويش"),
+                (mask_blur, "تشويش القناع"),
+                (inpainting_mask_invert, 'وضع القناع'),
+                (inpainting_fill, 'محتوى المنطقة المقنَّعة'),
+                (inpaint_full_res, 'منطقة الترميم'),
+                (inpaint_full_res_padding, 'هامش المنطقة المقنَّعة'),
                 *scripts.scripts_img2img.infotext_fields
             ]
             parameters_copypaste.add_paste_fields("img2img", init_img, img2img_paste_fields, override_settings)
@@ -886,7 +886,7 @@ def create_ui():
     with gr.Blocks(analytics_enabled=False) as pnginfo_interface:
         with ResizeHandleRow(equal_height=False):
             with gr.Column(variant='panel'):
-                image = gr.Image(elem_id="pnginfo_image", label="Source", source="upload", interactive=True, type="pil")
+                image = gr.Image(elem_id="pnginfo_image", label="المصدر", source="upload", interactive=True, type="pil")
 
             with gr.Column(variant='panel'):
                 html = gr.HTML()
@@ -910,96 +910,96 @@ def create_ui():
 
     with gr.Blocks(analytics_enabled=False) as train_interface:
         with gr.Row(equal_height=False):
-            gr.HTML(value="<p style='margin-bottom: 0.7em'>See <b><a href=\"https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Textual-Inversion\">wiki</a></b> for detailed explanation.</p>")
+            gr.HTML(value="<p style='margin-bottom: 0.7em'>لمزيد من الشرح التفصيلي، راجع صفحة الـ <b><a href=\"https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Textual-Inversion\">ويكي</a></b>.</p>")
 
         with ResizeHandleRow(variant="compact", equal_height=False):
             with gr.Tabs(elem_id="train_tabs"):
 
-                with gr.Tab(label="Create embedding", id="create_embedding"):
-                    new_embedding_name = gr.Textbox(label="Name", elem_id="train_new_embedding_name")
-                    initialization_text = gr.Textbox(label="Initialization text", value="*", elem_id="train_initialization_text")
-                    nvpt = gr.Slider(label="Number of vectors per token", minimum=1, maximum=75, step=1, value=1, elem_id="train_nvpt")
-                    overwrite_old_embedding = gr.Checkbox(value=False, label="Overwrite Old Embedding", elem_id="train_overwrite_old_embedding")
+                with gr.Tab(label="إنشاء تضمين", id="create_embedding"):
+                    new_embedding_name = gr.Textbox(label="الاسم", elem_id="train_new_embedding_name")
+                    initialization_text = gr.Textbox(label="نص التهيئة", value="*", elem_id="train_initialization_text")
+                    nvpt = gr.Slider(label="عدد المتجهات لكل رمز", minimum=1, maximum=75, step=1, value=1, elem_id="train_nvpt")
+                    overwrite_old_embedding = gr.Checkbox(value=False, label="الكتابة فوق التضمين القديم", elem_id="train_overwrite_old_embedding")
 
                     with gr.Row():
                         with gr.Column(scale=3):
                             gr.HTML(value="")
 
                         with gr.Column():
-                            create_embedding = gr.Button(value="Create embedding", variant='primary', elem_id="train_create_embedding")
+                            create_embedding = gr.Button(value="إنشاء تضمين", variant='primary', elem_id="train_create_embedding")
 
-                with gr.Tab(label="Create hypernetwork", id="create_hypernetwork"):
-                    new_hypernetwork_name = gr.Textbox(label="Name", elem_id="train_new_hypernetwork_name")
-                    new_hypernetwork_sizes = gr.CheckboxGroup(label="Modules", value=["768", "320", "640", "1280"], choices=["768", "1024", "320", "640", "1280"], elem_id="train_new_hypernetwork_sizes")
-                    new_hypernetwork_layer_structure = gr.Textbox("1, 2, 1", label="Enter hypernetwork layer structure", placeholder="1st and last digit must be 1. ex:'1, 2, 1'", elem_id="train_new_hypernetwork_layer_structure")
-                    new_hypernetwork_activation_func = gr.Dropdown(value="linear", label="Select activation function of hypernetwork. Recommended : Swish / Linear(none)", choices=hypernetworks_ui.keys, elem_id="train_new_hypernetwork_activation_func")
-                    new_hypernetwork_initialization_option = gr.Dropdown(value = "Normal", label="Select Layer weights initialization. Recommended: Kaiming for relu-like, Xavier for sigmoid-like, Normal otherwise", choices=["Normal", "KaimingUniform", "KaimingNormal", "XavierUniform", "XavierNormal"], elem_id="train_new_hypernetwork_initialization_option")
-                    new_hypernetwork_add_layer_norm = gr.Checkbox(label="Add layer normalization", elem_id="train_new_hypernetwork_add_layer_norm")
-                    new_hypernetwork_use_dropout = gr.Checkbox(label="Use dropout", elem_id="train_new_hypernetwork_use_dropout")
-                    new_hypernetwork_dropout_structure = gr.Textbox("0, 0, 0", label="Enter hypernetwork Dropout structure (or empty). Recommended : 0~0.35 incrementing sequence: 0, 0.05, 0.15", placeholder="1st and last digit must be 0 and values should be between 0 and 1. ex:'0, 0.01, 0'")
-                    overwrite_old_hypernetwork = gr.Checkbox(value=False, label="Overwrite Old Hypernetwork", elem_id="train_overwrite_old_hypernetwork")
+                with gr.Tab(label="إنشاء Hypernetwork", id="create_hypernetwork"):
+                    new_hypernetwork_name = gr.Textbox(label="الاسم", elem_id="train_new_hypernetwork_name")
+                    new_hypernetwork_sizes = gr.CheckboxGroup(label="الوحدات", value=["768", "320", "640", "1280"], choices=["768", "1024", "320", "640", "1280"], elem_id="train_new_hypernetwork_sizes")
+                    new_hypernetwork_layer_structure = gr.Textbox("1, 2, 1", label="أدخل بنية طبقات الـ Hypernetwork", placeholder="يجب أن يكون أول وآخر رقم 1. مثال: '1, 2, 1'", elem_id="train_new_hypernetwork_layer_structure")
+                    new_hypernetwork_activation_func = gr.Dropdown(value="linear", label="اختر دالة التفعيل للـ Hypernetwork. يُنصح بـ: Swish / Linear(none)", choices=hypernetworks_ui.keys, elem_id="train_new_hypernetwork_activation_func")
+                    new_hypernetwork_initialization_option = gr.Dropdown(value = "Normal", label="اختر طريقة تهيئة أوزان الطبقات. يُنصح بـ: Kaiming لـ relu، وXavier لـ sigmoid، وNormal للباقي", choices=["Normal", "KaimingUniform", "KaimingNormal", "XavierUniform", "XavierNormal"], elem_id="train_new_hypernetwork_initialization_option")
+                    new_hypernetwork_add_layer_norm = gr.Checkbox(label="إضافة تسوية للطبقات (Layer Norm)", elem_id="train_new_hypernetwork_add_layer_norm")
+                    new_hypernetwork_use_dropout = gr.Checkbox(label="استخدام Dropout", elem_id="train_new_hypernetwork_use_dropout")
+                    new_hypernetwork_dropout_structure = gr.Textbox("0, 0, 0", label="أدخل بنية الـ Dropout في الـ Hypernetwork (أو اتركه فارغًا). يُنصح بقيم بين 0 و 0.35 مثل: 0, 0.05, 0.15", placeholder="يجب أن يكون أول وآخر رقم 0 والقيم بين 0 و 1. مثال: '0, 0.01, 0'")
+                    overwrite_old_hypernetwork = gr.Checkbox(value=False, label="الكتابة فوق الـ Hypernetwork القديم", elem_id="train_overwrite_old_hypernetwork")
 
                     with gr.Row():
                         with gr.Column(scale=3):
                             gr.HTML(value="")
 
                         with gr.Column():
-                            create_hypernetwork = gr.Button(value="Create hypernetwork", variant='primary', elem_id="train_create_hypernetwork")
+                            create_hypernetwork = gr.Button(value="إنشاء Hypernetwork", variant='primary', elem_id="train_create_hypernetwork")
 
                 def get_textual_inversion_template_names():
                     return sorted(textual_inversion.textual_inversion_templates)
 
-                with gr.Tab(label="Train", id="train"):
-                    gr.HTML(value="<p style='margin-bottom: 0.7em'>Train an embedding or Hypernetwork; you must specify a directory with a set of 1:1 ratio images <a href=\"https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Textual-Inversion\" style=\"font-weight:bold;\">[wiki]</a></p>")
+                with gr.Tab(label="التدريب", id="train"):
+                    gr.HTML(value="<p style='margin-bottom: 0.7em'>قم بتدريب تضمين أو Hypernetwork؛ يجب أن تحدد مجلدًا يحتوي على صور بنسبة أبعاد 1:1 <a href=\"https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Textual-Inversion\" style=\"font-weight:bold;\">[ويكي]</a></p>")
                     with FormRow():
-                        train_embedding_name = gr.Dropdown(label='Embedding', elem_id="train_embedding", choices=sorted(sd_hijack.model_hijack.embedding_db.word_embeddings.keys()))
+                        train_embedding_name = gr.Dropdown(label='التضمين', elem_id="train_embedding", choices=sorted(sd_hijack.model_hijack.embedding_db.word_embeddings.keys()))
                         create_refresh_button(train_embedding_name, sd_hijack.model_hijack.embedding_db.load_textual_inversion_embeddings, lambda: {"choices": sorted(sd_hijack.model_hijack.embedding_db.word_embeddings.keys())}, "refresh_train_embedding_name")
 
                         train_hypernetwork_name = gr.Dropdown(label='Hypernetwork', elem_id="train_hypernetwork", choices=sorted(shared.hypernetworks))
                         create_refresh_button(train_hypernetwork_name, shared.reload_hypernetworks, lambda: {"choices": sorted(shared.hypernetworks)}, "refresh_train_hypernetwork_name")
 
                     with FormRow():
-                        embedding_learn_rate = gr.Textbox(label='Embedding Learning rate', placeholder="Embedding Learning rate", value="0.005", elem_id="train_embedding_learn_rate")
-                        hypernetwork_learn_rate = gr.Textbox(label='Hypernetwork Learning rate', placeholder="Hypernetwork Learning rate", value="0.00001", elem_id="train_hypernetwork_learn_rate")
+                        embedding_learn_rate = gr.Textbox(label='معدل تعلم التضمين', placeholder="معدل تعلم التضمين", value="0.005", elem_id="train_embedding_learn_rate")
+                        hypernetwork_learn_rate = gr.Textbox(label='معدل تعلم الـ Hypernetwork', placeholder="معدل تعلم الـ Hypernetwork", value="0.00001", elem_id="train_hypernetwork_learn_rate")
 
                     with FormRow():
-                        clip_grad_mode = gr.Dropdown(value="disabled", label="Gradient Clipping", choices=["disabled", "value", "norm"])
-                        clip_grad_value = gr.Textbox(placeholder="Gradient clip value", value="0.1", show_label=False)
+                        clip_grad_mode = gr.Dropdown(value="معطل", label="قصّ التدرجات (Gradient Clipping)", choices=["معطل", "قيمة", "معياري"])
+                        clip_grad_value = gr.Textbox(placeholder="قيمة قصّ التدرج", value="0.1", show_label=False)
 
                     with FormRow():
-                        batch_size = gr.Number(label='Batch size', value=1, precision=0, elem_id="train_batch_size")
-                        gradient_step = gr.Number(label='Gradient accumulation steps', value=1, precision=0, elem_id="train_gradient_step")
+                        batch_size = gr.Number(label='حجم الدفعة', value=1, precision=0, elem_id="train_batch_size")
+                        gradient_step = gr.Number(label='خطوات تجميع التدرجات', value=1, precision=0, elem_id="train_gradient_step")
 
-                    dataset_directory = gr.Textbox(label='Dataset directory', placeholder="Path to directory with input images", elem_id="train_dataset_directory")
-                    log_directory = gr.Textbox(label='Log directory', placeholder="Path to directory where to write outputs", value="textual_inversion", elem_id="train_log_directory")
+                    dataset_directory = gr.Textbox(label='مجلد بيانات التدريب', placeholder="مسار المجلد الذي يحتوي على الصور", elem_id="train_dataset_directory")
+                    log_directory = gr.Textbox(label='مجلد السجلات', placeholder="مسار المجلد الذي سيتم حفظ النتائج فيه", value="textual_inversion", elem_id="train_log_directory")
 
                     with FormRow():
-                        template_file = gr.Dropdown(label='Prompt template', value="style_filewords.txt", elem_id="train_template_file", choices=get_textual_inversion_template_names())
+                        template_file = gr.Dropdown(label='قالب النص', value="style_filewords.txt", elem_id="train_template_file", choices=get_textual_inversion_template_names())
                         create_refresh_button(template_file, textual_inversion.list_textual_inversion_templates, lambda: {"choices": get_textual_inversion_template_names()}, "refrsh_train_template_file")
 
-                    training_width = gr.Slider(minimum=64, maximum=2048, step=8, label="Width", value=512, elem_id="train_training_width")
-                    training_height = gr.Slider(minimum=64, maximum=2048, step=8, label="Height", value=512, elem_id="train_training_height")
-                    varsize = gr.Checkbox(label="Do not resize images", value=False, elem_id="train_varsize")
-                    steps = gr.Number(label='Max steps', value=100000, precision=0, elem_id="train_steps")
+                    training_width = gr.Slider(minimum=64, maximum=2048, step=8, label="العرض", value=512, elem_id="train_training_width")
+                    training_height = gr.Slider(minimum=64, maximum=2048, step=8, label="الارتفاع", value=512, elem_id="train_training_height")
+                    varsize = gr.Checkbox(label="عدم تغيير حجم الصور", value=False, elem_id="train_varsize")
+                    steps = gr.Number(label='أقصى عدد خطوات', value=100000, precision=0, elem_id="train_steps")
 
                     with FormRow():
-                        create_image_every = gr.Number(label='Save an image to log directory every N steps, 0 to disable', value=500, precision=0, elem_id="train_create_image_every")
-                        save_embedding_every = gr.Number(label='Save a copy of embedding to log directory every N steps, 0 to disable', value=500, precision=0, elem_id="train_save_embedding_every")
+                        create_image_every = gr.Number(label='حفظ صورة في مجلد السجلات كل N خطوة، 0 للتعطيل', value=500, precision=0, elem_id="train_create_image_every")
+                        save_embedding_every = gr.Number(label='حفظ نسخة من التضمين في مجلد السجلات كل N خطوة، 0 للتعطيل', value=500, precision=0, elem_id="train_save_embedding_every")
 
-                    use_weight = gr.Checkbox(label="Use PNG alpha channel as loss weight", value=False, elem_id="use_weight")
+                    use_weight = gr.Checkbox(label="استخدام قناة ألفا في PNG كوزن للخسارة", value=False, elem_id="use_weight")
 
-                    save_image_with_stored_embedding = gr.Checkbox(label='Save images with embedding in PNG chunks', value=True, elem_id="train_save_image_with_stored_embedding")
-                    preview_from_txt2img = gr.Checkbox(label='Read parameters (prompt, etc...) from txt2img tab when making previews', value=False, elem_id="train_preview_from_txt2img")
+                    save_image_with_stored_embedding = gr.Checkbox(label='حفظ الصور مع التضمين داخل بيانات PNG', value=True, elem_id="train_save_image_with_stored_embedding")
+                    preview_from_txt2img = gr.Checkbox(label='قراءة الإعدادات (النص، إلخ) من تبويب txt2img عند إنشاء المعاينات', value=False, elem_id="train_preview_from_txt2img")
 
-                    shuffle_tags = gr.Checkbox(label="Shuffle tags by ',' when creating prompts.", value=False, elem_id="train_shuffle_tags")
-                    tag_drop_out = gr.Slider(minimum=0, maximum=1, step=0.1, label="Drop out tags when creating prompts.", value=0, elem_id="train_tag_drop_out")
+                    shuffle_tags = gr.Checkbox(label="خلط الوسوم المفصولة بـ ',' عند إنشاء النصوص.", value=False, elem_id="train_shuffle_tags")
+                    tag_drop_out = gr.Slider(minimum=0, maximum=1, step=0.1, label="إسقاط بعض الوسوم عشوائيًا عند إنشاء النصوص.", value=0, elem_id="train_tag_drop_out")
 
-                    latent_sampling_method = gr.Radio(label='Choose latent sampling method', value="once", choices=['once', 'deterministic', 'random'], elem_id="train_latent_sampling_method")
+                    latent_sampling_method = gr.Radio(label='اختر طريقة أخذ العينات في الفضاء الكامن', value="مرة واحدة", choices=['مرة واحدة', 'حتمي', 'عشوائي'], elem_id="train_latent_sampling_method")
 
                     with gr.Row():
-                        train_embedding = gr.Button(value="Train Embedding", variant='primary', elem_id="train_train_embedding")
-                        interrupt_training = gr.Button(value="Interrupt", elem_id="train_interrupt_training")
-                        train_hypernetwork = gr.Button(value="Train Hypernetwork", variant='primary', elem_id="train_train_hypernetwork")
+                        train_embedding = gr.Button(value="تدريب التضمين", variant='primary', elem_id="train_train_embedding")
+                        interrupt_training = gr.Button(value="إيقاف", elem_id="train_interrupt_training")
+                        train_hypernetwork = gr.Button(value="تدريب الـ Hypernetwork", variant='primary', elem_id="train_train_hypernetwork")
 
                 params = script_callbacks.UiTrainTabParams(txt2img_preview_params)
 
@@ -1007,7 +1007,7 @@ def create_ui():
 
             with gr.Column(elem_id='ti_gallery_container'):
                 ti_output = gr.Text(elem_id="ti_output", value="", show_label=False)
-                gr.Gallery(label='Output', show_label=False, elem_id='ti_gallery', columns=4)
+                gr.Gallery(label='النتيجة', show_label=False, elem_id='ti_gallery', columns=4)
                 gr.HTML(elem_id="ti_progress", value="")
                 ti_outcome = gr.HTML(elem_id="ti_error", value="")
 
@@ -1126,24 +1126,24 @@ def create_ui():
 
     interfaces = [
         (txt2img_interface, "تحويل النص الى صورة", "تحويل النص الى صورة"),
-        (img2img_interface, "img2img", "img2img"),
-        (extras_interface, "Extras", "extras"),
-        (pnginfo_interface, "PNG Info", "pnginfo"),
-        (modelmerger_ui.blocks, "Checkpoint Merger", "modelmerger"),
-        (train_interface, "Train", "train"),
+        (img2img_interface, "تحويل صورة الى صورة", "img2img"),
+        (extras_interface, "أدوات إضافية", "extras"),
+        (pnginfo_interface, "معلومات PNG", "pnginfo"),
+        (modelmerger_ui.blocks, "دمج نقاط الحفظ", "modelmerger"),
+        (train_interface, "التدريب", "train"),
     ]
 
     interfaces += script_callbacks.ui_tabs_callback()
-    interfaces += [(settings.interface, "Settings", "settings")]
+    interfaces += [(settings.interface, "الإعدادات", "settings")]
 
     extensions_interface = ui_extensions.create_ui()
-    interfaces += [(extensions_interface, "Extensions", "extensions")]
+    interfaces += [(extensions_interface, "الإضافات", "extensions")]
 
     shared.tab_names = []
     for _interface, label, _ifid in interfaces:
         shared.tab_names.append(label)
 
-    with gr.Blocks(theme=shared.gradio_theme, analytics_enabled=False, title="Image Genrtayion") as demo:
+    with gr.Blocks(theme=shared.gradio_theme, analytics_enabled=False, title="توليد الصور بالذكاء الاصطناعي") as demo:
         settings.add_quicksettings()
 
         parameters_copypaste.connect_paste_params_buttons()
